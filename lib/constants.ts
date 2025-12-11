@@ -239,12 +239,6 @@ export const EXPERIENCE: ExperienceItem[] = [
 ];
 
 export const EDUCATION: EducationItem[] = [
-    {
-        degree: "Higher Secondary (12th), 2023 — 72.4%",
-        institute: "Chandrasekhar Academy",
-        duration: "2021 - 2023",
-        description: "Focus on Learnging.",
-    },
 
     {
         degree: "B.Tech in Computer Science & Engineering",
@@ -252,4 +246,20 @@ export const EDUCATION: EducationItem[] = [
         duration: "2024 - 2028",
         description: "Focused on software development, problem solving, and modern web technologies. Participated in multiple hackathons and technical events.",
     },
+
+    {
+        degree: "Higher Secondary (12th), 2023 — 72.4%",
+        institute: "Chandrasekhar Academy",
+        duration: "2021 - 2023",
+        description: "Focus on Learning.",
+    },
+    {
+        degree: "Secondary (10th), 2021 — 92.4%",
+        institute: "Chandrasekhar Academy",
+        duration: "2021 - 2022",
+        description: "Focus on Learning.",
+    },
+
+
+
 ];

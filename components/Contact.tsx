@@ -75,7 +75,7 @@ export default function Contact() {
                             </motion.a>
 
                             <motion.a
-                                href="/Resume_New.pdf"
+                                href="/assets/Resume_New.pdf"
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 whileHover={{ scale: 1.05 }}

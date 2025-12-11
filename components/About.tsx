@@ -24,16 +24,16 @@ export default function About() {
                         {/* Left Column */}
                         <div className="space-y-6">
                             <p className="text-lg text-white/70 leading-relaxed">
-                                I'm Sachidananda Mallick, but you can call me Sachin. I'm passionate about creating digital experiences
+                                I&apos;m Sachidananda Mallick, but you can call me Sachin. I&apos;m passionate about creating digital experiences
                                 that sit at the intersection of design, storytelling, and technology.
                             </p>
                             <p className="text-lg text-white/70 leading-relaxed">
-                                As a Computer Science student at BPUT, I've developed a unique skill set that spans both creative and
-                                technical domains. Whether I'm editing a cinematic video, designing an interface, or building a web application,
+                                As a Computer Science student at BPUT, I&apos;ve developed a unique skill set that spans both creative and
+                                technical domains. Whether I&apos;m editing a cinematic video, designing an interface, or building a web application,
                                 I bring the same level of attention to detail and creativity.
                             </p>
                             <p className="text-lg text-white/70 leading-relaxed">
-                                I've had the opportunity to participate in multiple hackathons, collaborate with Google Developer Groups (GDG),
+                                I&apos;ve had the opportunity to participate in multiple hackathons, collaborate with Google Developer Groups (GDG),
                                 and work on diverse projects that challenge me to grow as both a creator and a developer.
                             </p>
                         </div>

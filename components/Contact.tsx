@@ -55,7 +55,7 @@ export default function Contact() {
                     {/* Section Title */}
                     <div className="text-center mb-12">
                         <h2 className="text-4xl md:text-5xl font-sans font-bold mb-4">
-                            Let's Work <span className="gradient-text">Together</span>
+                            Let&apos;s Work <span className="gradient-text">Together</span>
                         </h2>
                         <p className="text-lg text-white/60">
                             Available for freelance editing, development projects, and collaborations

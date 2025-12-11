@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 import { SOCIAL_LINKS } from "@/lib/constants";
 import { FaEnvelope, FaFileAlt, FaGithub, FaLinkedin, FaInstagram, FaYoutube } from "react-icons/fa";
+import { downloadResume } from "@/lib/downloadResume";
 
 export default function Contact() {
     const { ref, inView } = useScrollReveal();
@@ -74,16 +75,14 @@ export default function Contact() {
                                 <FaEnvelope className="inline mr-2" /> Email Me
                             </motion.a>
 
-                            <motion.a
-                                href="/assets/Resume_New.pdf"
-                                target="_blank"
-                                rel="noopener noreferrer"
+                            <motion.button
+                                onClick={downloadResume}
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
                                 className="block w-full px-8 py-4 glass border border-white/20 hover:border-white/40 text-white font-semibold rounded-lg transition-all duration-200 text-center"
                             >
-                                <FaFileAlt className="inline mr-2" /> View Resume
-                            </motion.a>
+                                <FaFileAlt className="inline mr-2" /> Download Resume
+                            </motion.button>
 
                             {/* Social Links */}
                             <div className="pt-6">

@@ -6,6 +6,7 @@ import { FaGithub, FaLinkedin, FaInstagram, FaYoutube } from "react-icons/fa";
 import { SOCIAL_LINKS } from "@/lib/constants";
 import RotatingCircuit from "./RotatingCircuit";
 import { RainbowButton } from "./ui/rainbow-button";
+import { downloadResume } from "@/lib/downloadResume";
 
 const roles = ["Designer", "Video Editor", "Developer"];
 
@@ -128,15 +129,14 @@ export default function Hero() {
                                 ALL WORKS
                             </RainbowButton>
 
-                            <motion.a
+                            <motion.button
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
-                                href="/assets/Resume_New.pdf"
-                                download="Sachidananda_Mallick_Resume.pdf"
+                                onClick={downloadResume}
                                 className="px-8 py-3 glass border border-white/20 hover:border-white/40 text-white font-semibold rounded-lg transition-all duration-200"
                             >
                                 Download Resume
-                            </motion.a>
+                            </motion.button>
                         </div>
 
                         {/* Social Links */}

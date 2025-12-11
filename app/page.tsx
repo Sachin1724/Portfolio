@@ -48,35 +48,35 @@ export default function Home() {
                     items={[
                         {
                             id: 1,
-                            image: "/assets/images/carousel1.jpg",
+                            image: "/assets/images/Carousel1.jpg",
                             title: "SIH 2025",
                             description: "Media Coverage and Official Video Partner for SIH 2025.",
                             link: "https://youtu.be/qhUdQNE2fvg?si=bEGqtF-IVQfmVsbX" // Add your actual project link here
                         },
                         {
                             id: 2,
-                            image: "/assets/images/carousel2.jpg",
+                            image: "/assets/images/Carousel2.JPG",
                             title: "GDG DEVFEST 2025",
                             description: "Ofiicial Media partner for DEVFEST 2025 Ranchi in collaboration with Kizen Production. ",
                             link: "https://www.instagram.com/reel/DPwqsY-EiEp/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==" // Add your actual project link here
                         },
                         {
                             id: 3,
-                            image: "/assets/images/carousel3.jpg",
+                            image: "/assets/images/Carousel3.jpg",
                             title: "SIH Coverage",
                             description: "Media Coverage for SIH 2025.",
                             link: "https://www.instagram.com/p/DSC2bX4k9VP/" // Add your actual project link here
                         },
                         {
                             id: 4,
-                            image: "/assets/images/carousel4.jpg",
+                            image: "/assets/images/Carousel4.jpg",
                             title: "Podcast Production",
                             description: "Podcast Production for The Lazy IITAN.",
                             link: "https://drive.google.com/file/d/1UVf0LLjRTB0ZkMZYWd_hTPkzbRI892RE/view?usp=drive_link" // Add your actual project link here
                         },
                         {
                             id: 5,
-                            image: "/assets/images/carousel5.jpg",
+                            image: "/assets/images/Carousel5.jpg",
                             title: "Thumbnail Design",
                             description: "Thumbnail Design for Podcast Production.",
                             link: "https://drive.google.com/drive/folders/1TXVd9L9Sr-JPgLhpsY2cnzuM3-EIToHD?usp=drive_link" // Add your actual project link here

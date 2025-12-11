@@ -85,13 +85,13 @@ export default function Hero() {
                         {/* Main Heading */}
                         <div>
                             <h1 className="text-5xl md:text-6xl lg:text-7xl font-sans font-bold mb-4">
-                                Hi, I'm{" "}
+                                Hi, I&apos;m{" "}
                                 <span className="gradient-text">Sachidananda Mallick</span>
                             </h1>
 
                             {/* Role Rotation */}
                             <div className="text-2xl md:text-3xl font-sans font-semibold text-white/80 h-12 flex items-center">
-                                I'm a{" "}
+                                I&apos;m a{" "}
                                 <motion.span
                                     key={currentRole}
                                     initial={{ opacity: 0, y: 20 }}

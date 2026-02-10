@@ -55,7 +55,7 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
                                 {tag}
                             </span>
                         ))}
-                        {!isMedia && project.techStack?.map((tech) => (
+                        {!isMedia && project.tech_stack?.map((tech) => (
                             <span
                                 key={tech}
                                 className="px-3 py-1 text-xs font-medium rounded-full glass border border-white/20"
@@ -84,12 +84,12 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
                         </a>
                     ) : (
                         <>
-                            {project.githubUrl && (
+                            {project.github_url && (
                                 <button className="flex-1 px-4 py-2 glass hover:bg-white/10 rounded-lg font-medium transition-all duration-200 border border-white/20">
                                     GitHub
                                 </button>
                             )}
-                            {project.liveUrl && (
+                            {project.live_url && (
                                 <button className="flex-1 px-4 py-2 bg-primary/20 hover:bg-primary text-white rounded-lg font-medium transition-all duration-200 border border-primary/30 hover:border-primary">
                                     Live Demo
                                 </button>

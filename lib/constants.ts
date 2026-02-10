@@ -64,8 +64,8 @@ export const DEV_PROJECTS: Project[] = [
         title: "Solaris",
         image: "/assets/images/solaris.jpg",
         description: "Full-stack Solar Panel Management System.",
-        techStack: ["Next.js", "TypeScript", "MongoDB", "Stripe"],
-        githubUrl: "https://github.com/Sachin1724/solaris-frontend-v1",
+        tech_stack: ["Next.js", "TypeScript", "MongoDB", "Stripe"],
+        github_url: "https://github.com/Sachin1724/solaris-frontend-v1",
         category: "development",
     },
 

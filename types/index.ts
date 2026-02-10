@@ -5,9 +5,9 @@ export interface Project {
     image?: string;
     thumbnail?: string;
     tags?: string[];
-    techStack?: string[];
-    githubUrl?: string;
-    liveUrl?: string;
+    tech_stack?: string[];
+    github_url?: string;
+    live_url?: string;
     link?: string;
     category: "media" | "development";
 }

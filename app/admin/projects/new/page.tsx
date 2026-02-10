@@ -16,9 +16,10 @@ export default function NewProject() {
         category: 'media' as 'media' | 'development',
         image: '',
         link: '',
-        githubUrl: '',
+        github_url: '',
+        live_url: '',
         tags: '',
-        techStack: '',
+        tech_stack: '',
     });
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -43,9 +44,9 @@ export default function NewProject() {
                 projectData.link = formData.link;
                 projectData.tags = formData.tags.split(',').map(t => t.trim()).filter(Boolean);
             } else {
-                projectData.githubUrl = formData.githubUrl;
-                projectData.techStack = formData.techStack.split(',').map(t => t.trim()).filter(Boolean);
-                if (formData.link) projectData.liveUrl = formData.link;
+                projectData.github_url = formData.github_url;
+                projectData.tech_stack = formData.tech_stack.split(',').map(t => t.trim()).filter(Boolean);
+                if (formData.link) projectData.live_url = formData.link;
             }
 
             const response = await fetch('/api/projects', {
@@ -199,8 +200,8 @@ export default function NewProject() {
                                 </label>
                                 <input
                                     type="url"
-                                    value={formData.githubUrl}
-                                    onChange={(e) => setFormData({ ...formData, githubUrl: e.target.value })}
+                                    value={formData.github_url}
+                                    onChange={(e) => setFormData({ ...formData, github_url: e.target.value })}
                                     className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-white/30 focus:outline-none focus:border-[#cc1a3e]"
                                     placeholder="https://github.com/..."
                                 />
@@ -225,8 +226,8 @@ export default function NewProject() {
                                 </label>
                                 <input
                                     type="text"
-                                    value={formData.techStack}
-                                    onChange={(e) => setFormData({ ...formData, techStack: e.target.value })}
+                                    value={formData.tech_stack}
+                                    onChange={(e) => setFormData({ ...formData, tech_stack: e.target.value })}
                                     className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-white/30 focus:outline-none focus:border-[#cc1a3e]"
                                     placeholder="React, Next.js, TypeScript, MongoDB"
                                 />

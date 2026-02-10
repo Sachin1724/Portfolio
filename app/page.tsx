@@ -13,6 +13,7 @@ import Skills from "@/components/Skills";
 import Equipment from "@/components/Equipment";
 import Experience from "@/components/Experience";
 import Contact from "@/components/Contact";
+import AdminAccessButton from "@/components/AdminAccessButton";
 
 export default function Home() {
     const [loading, setLoading] = useState(true);
@@ -36,6 +37,7 @@ export default function Home() {
         <>
             {loading && <Preloader />}
             <NavbarWrapper isLoading={loading} />
+            <AdminAccessButton />
             <main className={`transition-opacity duration-500 ${loading ? "opacity-0" : "opacity-100"}`}>
                 <Hero />
                 <HandsOn />

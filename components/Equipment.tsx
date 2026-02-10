@@ -12,7 +12,7 @@ export default function Equipment() {
     // Map equipment types to image paths or URLs
     const getEquipmentImage = (type: string) => {
         const imageMap: { [key: string]: string } = {
-            "Primary Camera": "/assets/images/canon-camera.jpg",
+            "Primary Camera": "/assets/images/canon-camera.png",
             "Laptop": "/assets/images/asus-laptop.jpg",
             "Smartphone": "/assets/images/samsung-phone.jpg",
             "Microphone": "/assets/images/microphone.jpg",

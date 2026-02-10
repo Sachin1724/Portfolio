@@ -122,16 +122,16 @@ export const EQUIPMENT: EquipmentItem[] = [
     {
         icon: "camera",
         type: "Primary Camera",
-        model: "Canon 1200D",
-        usage: "Used for shooting production photos",
+        model: "Sony A6700",
+        usage: "Used for shooting production photos and videos",
         specs: [
-            "Type: DSLR",
-            "Sensor: APS-C CMOS (18 MP)",
-            "ISO Range: 100–6400 (expandable to 12800)",
-            "Autofocus: 9-point AF",
-            "Max Video: 1080p @ 30fps",
-            "Lens Mount: Canon EF / EF-S",
-            "Connectivity: USB 2.0, Mini HDMI"
+            "Type: Mirrorless",
+            "Sensor: APS-C Exmor R CMOS (26 MP)",
+            "ISO Range: 100–32000 (expandable to 102400)",
+            "Autofocus: 759-point Fast Hybrid AF with AI processing",
+            "Max Video: 4K @ 120fps, 10-bit 4:2:2",
+            "Lens Mount: Sony E-mount",
+            "Connectivity: USB-C, Micro HDMI, Wi-Fi 6, Bluetooth 5.0"
         ]
     },
     {

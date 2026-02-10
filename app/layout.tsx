@@ -1,7 +1,11 @@
+"use client";
+
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import NavbarWrapper from "@/components/NavbarWrapper";
+import { AuthProvider } from "@/contexts/auth-context";
+import { Toaster } from "react-hot-toast";
 
 const plusJakarta = Plus_Jakarta_Sans({
     subsets: ["latin"],
@@ -16,28 +20,19 @@ const generalSans = Plus_Jakarta_Sans({
     weight: ["600", "700", "800"],
 });
 
-export const metadata: Metadata = {
-    title: "Sachin Mallick - Designer, Video Editor & Developer",
-    description: "Portfolio of Sachidananda Mallick (Sachin Mallick) - CSE student at BPUT, designer, video editor, and developer. Showcasing projects in media and development.",
-    keywords: ["Sachin Mallick", "Sachidananda Mallick", "Portfolio", "Web Developer", "Video Editor", "Designer", "BPUT", "CSE"],
-    authors: [{ name: "Sachin Mallick" }],
-    openGraph: {
-        title: "Sachin Mallick - Designer, Video Editor & Developer",
-        description: "Portfolio showcasing media and development projects",
-        type: "website",
-    },
-};
-
 export default function RootLayout({
     children,
 }: Readonly<{
     children: React.ReactNode;
 }>) {
     return (
-        <html lang="en" className={`${plusJakarta.variable} ${generalSans.variable}`}>
+        <html lang="en" className={`${plusJakarta.variable} ${generalSans.variable}`} suppressHydrationWarning>
             <body className="antialiased" suppressHydrationWarning>
-                {children}
-                <NavbarWrapper />
+                <AuthProvider>
+                    {children}
+                    <NavbarWrapper />
+                    <Toaster position="top-right" />
+                </AuthProvider>
             </body>
         </html>
     );

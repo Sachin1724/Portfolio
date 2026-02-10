@@ -5,14 +5,28 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 import { MEDIA_PROJECTS, DEV_PROJECTS } from "@/lib/constants";
 import ProjectCard from "./ProjectCard";
+import useSWR from "swr";
+import { Project } from "@/types";
 
 type TabType = "media" | "development";
+
+const fetcher = (url: string) => fetch(url).then(r => r.json()).then(data => data.data || []);
 
 export default function Work() {
     const { ref, inView } = useScrollReveal();
     const [activeTab, setActiveTab] = useState<TabType>("media");
 
-    const projects = activeTab === "media" ? MEDIA_PROJECTS : DEV_PROJECTS;
+    // Fetch projects from API with SWR for caching and revalidation
+    const { data: fetchedProjects, error, isLoading } = useSWR<Project[]>('/api/projects', fetcher, {
+        fallbackData: [],
+        revalidateOnFocus: false,
+    });
+
+    // Use fetched projects if available, otherwise fallback to constants
+    const allProjects = fetchedProjects && fetchedProjects.length > 0 ? fetchedProjects : [...MEDIA_PROJECTS, ...DEV_PROJECTS];
+    const projects = activeTab === "media"
+        ? allProjects.filter(p => p.category === "media")
+        : allProjects.filter(p => p.category === "development");
 
     return (
         <section id="work" className="relative">
@@ -46,8 +60,8 @@ export default function Work() {
                             <button
                                 onClick={() => setActiveTab("development")}
                                 className={`px-8 py-3 rounded-full font-semibold transition-all duration-300 ${activeTab === "development"
-                                        ? "bg-[#cc1a3e] text-white glow-pink"
-                                        : "glass border border-white/20 text-white/70 hover:text-white hover:border-white/40"
+                                    ? "bg-[#cc1a3e] text-white glow-pink"
+                                    : "glass border border-white/20 text-white/70 hover:text-white hover:border-white/40"
                                     }`}
                             >
                                 Development Projects
@@ -55,21 +69,45 @@ export default function Work() {
                         </div>
                     </div>
 
+                    {/* Loading State */}
+                    {isLoading && (
+                        <div className="text-center py-12">
+                            <div className="w-12 h-12 border-4 border-[#cc1a3e] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                            <p className="text-white/60">Loading projects...</p>
+                        </div>
+                    )}
+
+                    {/* Error State */}
+                    {error && !isLoading && (
+                        <div className="text-center py-12 glass rounded-xl p-6">
+                            <p className="text-red-400 mb-2">Failed to load projects</p>
+                            <p className="text-white/60 text-sm">Showing cached projects</p>
+                        </div>
+                    )}
+
                     {/* Projects Grid */}
-                    <AnimatePresence mode="wait">
-                        <motion.div
-                            key={activeTab}
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -20 }}
-                            transition={{ duration: 0.4 }}
-                            className="grid md:grid-cols-2 gap-6"
-                        >
-                            {projects.map((project, index) => (
-                                <ProjectCard key={project.id} project={project} index={index} />
-                            ))}
-                        </motion.div>
-                    </AnimatePresence>
+                    {!isLoading && (
+                        <AnimatePresence mode="wait">
+                            <motion.div
+                                key={activeTab}
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -20 }}
+                                transition={{ duration: 0.4 }}
+                                className="grid md:grid-cols-2 gap-6"
+                            >
+                                {projects.length === 0 ? (
+                                    <div className="col-span-2 text-center py-12 glass rounded-xl">
+                                        <p className="text-white/60">No projects in this category yet</p>
+                                    </div>
+                                ) : (
+                                    projects.map((project, index) => (
+                                        <ProjectCard key={project.id} project={project} index={index} />
+                                    ))
+                                )}
+                            </motion.div>
+                        </AnimatePresence>
+                    )}
                 </motion.div>
             </div>
         </section>

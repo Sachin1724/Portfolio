@@ -85,19 +85,29 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
                     ) : (
                         <>
                             {project.github_url && (
-                                <button className="flex-1 px-4 py-2 glass hover:bg-white/10 rounded-lg font-medium transition-all duration-200 border border-white/20">
+                                <a
+                                    href={project.github_url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex-1 px-4 py-2 glass hover:bg-white/10 rounded-lg font-medium transition-all duration-200 border border-white/20 text-center"
+                                >
                                     GitHub
-                                </button>
+                                </a>
                             )}
                             {project.live_url && (
-                                <button className="flex-1 px-4 py-2 bg-primary/20 hover:bg-primary text-white rounded-lg font-medium transition-all duration-200 border border-primary/30 hover:border-primary">
+                                <a
+                                    href={project.live_url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex-1 px-4 py-2 bg-primary/20 hover:bg-primary text-white rounded-lg font-medium transition-all duration-200 border border-primary/30 hover:border-primary text-center"
+                                >
                                     Live Demo
-                                </button>
+                                </a>
                             )}
                         </>
                     )}
                 </div>
             </div>
-        </motion.div>
+        </motion.div >
     );
 }

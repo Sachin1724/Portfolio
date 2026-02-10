@@ -51,7 +51,7 @@ export async function PUT(
         }
 
         // If image is being replaced, delete the old one
-        if (body.image && body.image !== existingProject.image) {
+        if (body.image && body.image !== existingProject.image && existingProject.image) {
             await deleteImage(existingProject.image);
         }
 

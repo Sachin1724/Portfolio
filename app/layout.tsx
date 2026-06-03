@@ -1,24 +1,31 @@
-"use client";
-
 import type { Metadata } from "next";
-import { Plus_Jakarta_Sans } from "next/font/google";
+import { Syne } from "next/font/google";
 import "./globals.css";
-import NavbarWrapper from "@/components/NavbarWrapper";
-import { AuthProvider } from "@/contexts/auth-context";
-import { Toaster } from "react-hot-toast";
+import CursorGlow from "@/components/CursorGlow";
+import SmoothScroll from "@/components/SmoothScroll";
 
-const plusJakarta = Plus_Jakarta_Sans({
-    subsets: ["latin"],
-    variable: "--font-plus-jakarta",
-    weight: ["300", "400", "500", "600", "700", "800"],
-});
+const syne = Syne({ subsets: ["latin"] });
 
-// Using Plus Jakarta Sans for both until General Sans is provided
-const generalSans = Plus_Jakarta_Sans({
-    subsets: ["latin"],
-    variable: "--font-general-sans",
-    weight: ["600", "700", "800"],
-});
+export const metadata: Metadata = {
+    title: "Sachin Dada — Cinematic Creator & Dev Freelancer",
+    description:
+        "B.Tech student from Odisha. Developer, Video Editor, and Creator. Building websites, editing reels, and teaching coding in Odia.",
+    keywords: [
+        "Sachin Dada",
+        "Sachidananda Mallick",
+        "Web Developer",
+        "Video Editor",
+        "Freelancer",
+        "Odia Tech Creator",
+        "Odisha",
+    ],
+    openGraph: {
+        title: "Sachin Dada — Cinematic Creator & Dev Freelancer",
+        description:
+            "B.Tech student from Odisha. Developer, Video Editor, and Creator.",
+        type: "website",
+    },
+};
 
 export default function RootLayout({
     children,
@@ -26,13 +33,29 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <html lang="en" className={`${plusJakarta.variable} ${generalSans.variable}`} suppressHydrationWarning>
+        <html lang="en" suppressHydrationWarning>
+            <head>
+                <script
+                    dangerouslySetInnerHTML={{
+                        __html: `
+                            (function() {
+                                try {
+                                    var stored = localStorage.getItem('theme');
+                                    if (stored) {
+                                        document.documentElement.setAttribute('data-theme', stored);
+                                    } else {
+                                        document.documentElement.setAttribute('data-theme', 'dark');
+                                    }
+                                } catch (e) {}
+                            })();
+                        `,
+                    }}
+                />
+            </head>
             <body className="antialiased" suppressHydrationWarning>
-                <AuthProvider>
+                <SmoothScroll>
                     {children}
-                    <NavbarWrapper />
-                    <Toaster position="top-right" />
-                </AuthProvider>
+                </SmoothScroll>
             </body>
         </html>
     );

@@ -1,132 +1,239 @@
 "use client";
 
-import { useEffect, useState } from 'react';
-import { FolderKanban, Video, Code } from 'lucide-react';
-import { getAllProjects } from '@/lib/firestore-projects';
-import { Project } from '@/types';
-import Link from 'next/link';
+import { useState, useEffect } from "react";
+import { Project } from "@/types";
+import { PACKAGES, SKILL_CATEGORIES, EXPERIENCE, EDUCATION, EQUIPMENT } from "@/lib/constants";
+import { Save, Plus, Trash2 } from "lucide-react";
 
 export default function AdminDashboard() {
-    const [projects, setProjects] = useState<Project[]>([]);
+    const [mediaProjects, setMediaProjects] = useState<Project[]>([]);
+    const [devProjects, setDevProjects] = useState<Project[]>([]);
     const [loading, setLoading] = useState(true);
+    const [saving, setSaving] = useState(false);
+    const [message, setMessage] = useState("");
 
     useEffect(() => {
-        fetchProjects();
+        fetch("/api/projects")
+            .then((res) => res.json())
+            .then((data) => {
+                setMediaProjects(data.MEDIA_PROJECTS || []);
+                setDevProjects(data.DEV_PROJECTS || []);
+                setLoading(false);
+            })
+            .catch(() => setLoading(false));
     }, []);
 
-    const fetchProjects = async () => {
+    const handleSave = async () => {
+        setSaving(true);
+        setMessage("");
         try {
-            const data = await getAllProjects();
-            setProjects(data);
-        } catch (error) {
-            console.error('Error fetching projects:', error);
-        } finally {
-            setLoading(false);
+            const res = await fetch("/api/projects", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ MEDIA_PROJECTS: mediaProjects, DEV_PROJECTS: devProjects }),
+            });
+            if (res.ok) {
+                setMessage("Projects saved successfully! Refresh frontend to see changes.");
+            } else {
+                setMessage("Failed to save.");
+            }
+        } catch (err) {
+            setMessage("Error saving.");
+        }
+        setSaving(false);
+        setTimeout(() => setMessage(""), 4000);
+    };
+
+    const updateProject = (category: "media" | "dev", index: number, field: keyof Project, value: any) => {
+        if (category === "media") {
+            const newArr = [...mediaProjects];
+            newArr[index] = { ...newArr[index], [field]: value };
+            setMediaProjects(newArr);
+        } else {
+            const newArr = [...devProjects];
+            newArr[index] = { ...newArr[index], [field]: value };
+            setDevProjects(newArr);
         }
     };
 
-    const mediaCount = projects.filter(p => p.category === 'media').length;
-    const devCount = projects.filter(p => p.category === 'development').length;
+    const addProject = (category: "media" | "dev") => {
+        const newProj: Project = { id: Date.now().toString(), title: "New Project", category, image: "", description: "" };
+        if (category === "media") setMediaProjects([newProj, ...mediaProjects]);
+        else setDevProjects([newProj, ...devProjects]);
+    };
+
+    const removeProject = (category: "media" | "dev", index: number) => {
+        if (category === "media") {
+            setMediaProjects(mediaProjects.filter((_, i) => i !== index));
+        } else {
+            setDevProjects(devProjects.filter((_, i) => i !== index));
+        }
+    };
+
+    if (loading) return <div className="p-8 font-mono">Loading CMS...</div>;
 
     return (
         <div>
-            <div className="mb-8">
-                <h1 className="text-4xl font-bold mb-2">
-                    <span className="gradient-text">Dashboard</span>
-                </h1>
-                <p className="text-white/60">Manage your portfolio content</p>
-            </div>
-
-            {/* Stats Grid */}
-            <div className="grid md:grid-cols-3 gap-6 mb-8">
-                <div className="glass rounded-xl p-6">
-                    <div className="flex items-center gap-4">
-                        <div className="p-3 bg-[#cc1a3e]/20 rounded-lg">
-                            <FolderKanban className="w-6 h-6 text-[#cc1a3e]" />
-                        </div>
-                        <div>
-                            <p className="text-white/60 text-sm">Total Projects</p>
-                            <p className="text-3xl font-bold text-white">{loading ? '...' : projects.length}</p>
-                        </div>
-                    </div>
+            {/* Header */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+                <div>
+                    <h1 className="text-4xl font-extrabold mb-2 tracking-tight font-syne text-[var(--accent)]">
+                        Local CMS
+                    </h1>
+                    <p className="text-sm font-mono text-[var(--muted)]">
+                        Manage your portfolio projects. Changes are saved locally to data/projects.json
+                    </p>
                 </div>
-
-                <div className="glass rounded-xl p-6">
-                    <div className="flex items-center gap-4">
-                        <div className="p-3 bg-purple-500/20 rounded-lg">
-                            <Video className="w-6 h-6 text-purple-400" />
-                        </div>
-                        <div>
-                            <p className="text-white/60 text-sm">Media Projects</p>
-                            <p className="text-3xl font-bold text-white">{loading ? '...' : mediaCount}</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="glass rounded-xl p-6">
-                    <div className="flex items-center gap-4">
-                        <div className="p-3 bg-blue-500/20 rounded-lg">
-                            <Code className="w-6 h-6 text-blue-400" />
-                        </div>
-                        <div>
-                            <p className="text-white/60 text-sm">Dev Projects</p>
-                            <p className="text-3xl font-bold text-white">{loading ? '...' : devCount}</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {/* Quick Actions */}
-            <div className="glass rounded-xl p-6">
-                <h2 className="text-xl font-bold mb-4">Quick Actions</h2>
-                <div className="grid md:grid-cols-2 gap-4">
-                    <Link
-                        href="/admin/projects/new"
-                        className="p-4 bg-[#cc1a3e] hover:bg-[#a61530] rounded-lg transition-colors group"
+                
+                <div className="flex items-center gap-4">
+                    {message && (
+                        <span className="text-sm font-mono text-[var(--odia)]">{message}</span>
+                    )}
+                    <button 
+                        onClick={handleSave} 
+                        disabled={saving}
+                        className="flex items-center gap-2 bg-[var(--accent)] text-black font-bold font-syne px-6 py-2 rounded-full hover:scale-105 transition-transform disabled:opacity-50"
                     >
-                        <h3 className="font-semibold mb-1">Add New Project</h3>
-                        <p className="text-sm text-white/80">Upload and create a new portfolio project</p>
-                    </Link>
-
-                    <Link
-                        href="/admin/projects"
-                        className="p-4 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg transition-colors group"
-                    >
-                        <h3 className="font-semibold mb-1">Manage Projects</h3>
-                        <p className="text-sm text-white/60">Edit or delete existing projects</p>
-                    </Link>
+                        <Save size={18} />
+                        {saving ? "Saving..." : "Save Changes"}
+                    </button>
                 </div>
             </div>
 
-            {/* Recent Projects */}
-            {!loading && projects.length > 0 && (
-                <div className="mt-8 glass rounded-xl p-6">
-                    <h2 className="text-xl font-bold mb-4">Recent Projects</h2>
-                    <div className="space-y-3">
-                        {projects.slice(0, 5).map((project) => (
-                            <div key={project.id} className="flex items-center gap-4 p-3 bg-white/5 rounded-lg">
-                                {project.image && (
-                                    <img
-                                        src={project.image}
-                                        alt={project.title}
-                                        className="w-16 h-16 object-cover rounded-lg"
-                                    />
-                                )}
-                                <div className="flex-1">
-                                    <h3 className="font-semibold">{project.title}</h3>
-                                    <p className="text-sm text-white/60">{project.category}</p>
-                                </div>
-                                <Link
-                                    href={`/admin/projects/edit/${project.id}`}
-                                    className="px-4 py-2 bg-white/5 hover:bg-white/10 rounded-lg text-sm transition-colors"
-                                >
-                                    Edit
-                                </Link>
+            <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
+                {/* Media Projects */}
+                <ProjectList 
+                    title="Media Projects" 
+                    projects={mediaProjects} 
+                    category="media"
+                    onUpdate={updateProject}
+                    onAdd={() => addProject("media")}
+                    onRemove={(i) => removeProject("media", i)}
+                />
+
+                {/* Dev Projects */}
+                <ProjectList 
+                    title="Dev Projects" 
+                    projects={devProjects} 
+                    category="dev"
+                    onUpdate={updateProject}
+                    onAdd={() => addProject("dev")}
+                    onRemove={(i) => removeProject("dev", i)}
+                />
+            </div>
+            
+            {/* Other Sections (Read-only) */}
+            <div className="mt-12 pt-8 border-t border-[var(--border)]">
+                <h3 className="font-syne text-xl font-bold mb-4">Other Static Content</h3>
+                <p className="text-sm font-mono text-[var(--muted)] mb-4">Packages, Skills, Experience, and Equipment are still managed in <code className="text-[var(--accent)]">lib/constants.ts</code>.</p>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div className="p-4 bg-[var(--surface)] border border-[var(--border)] rounded-lg font-mono text-sm">📦 {PACKAGES.length} Packages loaded</div>
+                    <div className="p-4 bg-[var(--surface)] border border-[var(--border)] rounded-lg font-mono text-sm">💼 {EXPERIENCE.length} Roles loaded</div>
+                    <div className="p-4 bg-[var(--surface)] border border-[var(--border)] rounded-lg font-mono text-sm">🎓 {EDUCATION.length} Degrees loaded</div>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+function ProjectList({ 
+    title, 
+    projects, 
+    category, 
+    onUpdate, 
+    onAdd, 
+    onRemove 
+}: { 
+    title: string; 
+    projects: Project[]; 
+    category: "media" | "dev";
+    onUpdate: (cat: "media" | "dev", idx: number, field: keyof Project, val: any) => void;
+    onAdd: () => void;
+    onRemove: (idx: number) => void;
+}) {
+    return (
+        <div className="p-6 bg-[var(--surface)] border border-[var(--border)] rounded-[var(--radius-card)]">
+            <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-bold font-syne">{title}</h2>
+                <button 
+                    onClick={onAdd}
+                    className="flex items-center gap-1 font-mono text-xs bg-[rgba(255,255,255,0.05)] border border-[var(--border)] px-3 py-1.5 rounded hover:bg-[rgba(255,255,255,0.1)] transition-colors"
+                >
+                    <Plus size={14} /> Add New
+                </button>
+            </div>
+
+            <div className="space-y-6">
+                {projects.map((p, i) => (
+                    <div key={p.id} className="p-4 bg-[rgba(0,0,0,0.2)] border border-[var(--border)] rounded-lg relative group">
+                        <button 
+                            onClick={() => onRemove(i)}
+                            className="absolute top-4 right-4 text-[var(--muted)] hover:text-red-400 transition-colors"
+                            title="Remove project"
+                        >
+                            <Trash2 size={16} />
+                        </button>
+                        
+                        <div className="grid grid-cols-1 gap-4 mt-2">
+                            <div>
+                                <label className="block text-xs font-mono text-[var(--muted)] mb-1">Title</label>
+                                <input 
+                                    type="text" 
+                                    value={p.title} 
+                                    onChange={(e) => onUpdate(category, i, "title", e.target.value)}
+                                    className="w-full bg-[rgba(255,255,255,0.03)] border border-[var(--border)] rounded p-2 text-sm focus:border-[var(--accent)] outline-none"
+                                />
                             </div>
-                        ))}
+                            <div>
+                                <label className="block text-xs font-mono text-[var(--muted)] mb-1">Description</label>
+                                <textarea 
+                                    value={p.description} 
+                                    onChange={(e) => onUpdate(category, i, "description", e.target.value)}
+                                    rows={2}
+                                    className="w-full bg-[rgba(255,255,255,0.03)] border border-[var(--border)] rounded p-2 text-sm focus:border-[var(--accent)] outline-none"
+                                />
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-xs font-mono text-[var(--muted)] mb-1">Image URL (Thumbnail)</label>
+                                    <input 
+                                        type="text" 
+                                        value={p.image || ""} 
+                                        onChange={(e) => onUpdate(category, i, "image", e.target.value)}
+                                        className="w-full bg-[rgba(255,255,255,0.03)] border border-[var(--border)] rounded p-2 text-sm focus:border-[var(--accent)] outline-none"
+                                        placeholder="/assets/images/thumb.jpg"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-mono text-[var(--muted)] mb-1">Video URL (Autoplays)</label>
+                                    <input 
+                                        type="text" 
+                                        value={(p as any).video_url || ""} 
+                                        onChange={(e) => onUpdate(category, i, "video_url" as any, e.target.value)}
+                                        className="w-full bg-[rgba(255,255,255,0.03)] border border-[var(--border)] rounded p-2 text-sm focus:border-[var(--accent)] outline-none"
+                                        placeholder="/assets/videos/preview.mp4"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-mono text-[var(--muted)] mb-1">{category === "media" ? "Video Link" : "GitHub / Live URL"}</label>
+                                    <input 
+                                        type="text" 
+                                        value={category === "media" ? p.link || "" : p.github_url || p.link || ""} 
+                                        onChange={(e) => onUpdate(category, i, category === "media" ? "link" : "github_url", e.target.value)}
+                                        className="w-full bg-[rgba(255,255,255,0.03)] border border-[var(--border)] rounded p-2 text-sm focus:border-[var(--accent)] outline-none"
+                                    />
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            )}
+                ))}
+                
+                {projects.length === 0 && (
+                    <div className="text-center p-8 font-mono text-sm text-[var(--muted)] border border-dashed border-[var(--border)] rounded-lg">
+                        No projects found. Add one!
+                    </div>
+                )}
+            </div>
         </div>
     );
 }

@@ -1,154 +1,234 @@
 "use client";
 
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { useScrollReveal } from "@/hooks/useScrollReveal";
+import { useRef, useEffect } from "react";
 import {
-    SiAdobephotoshop,
-    SiAdobeillustrator,
-    SiAdobepremierepro,
-    SiAdobeaftereffects,
-    SiFigma,
+    FiCode, FiMonitor, FiCamera, FiFilm, FiMic, FiEdit3,
+    FiPenTool, FiVideo, FiStar, FiDatabase, FiGitBranch, FiServer,
+    FiLayout, FiLayers, FiBox, FiScissors, FiImage,
+} from "react-icons/fi";
+import {
     SiBlender,
-    SiDavinciresolve,
-    SiAudacity,
-    SiReact,
-    SiNextdotjs,
-    SiTypescript,
-    SiJavascript,
-    SiTailwindcss,
-    SiNodedotjs,
-    SiMongodb,
-    SiGit,
-    SiHtml5,
-    SiCss3,
+    SiReact, SiNextdotjs, SiTypescript, SiJavascript, SiTailwindcss, SiHtml5, SiFigma,
+    SiNodedotjs, SiExpress, SiMongodb, SiPostgresql, SiGithub,
 } from "react-icons/si";
 
-interface Skill {
-    name: string;
-    icon: JSX.Element;
-    color: string;
-}
-
-const DESIGN_SKILLS: Skill[] = [
-    { name: "Photoshop", icon: <SiAdobephotoshop />, color: "#31A8FF" },
-    { name: "Illustrator", icon: <SiAdobeillustrator />, color: "#FF9A00" },
-    { name: "Premiere Pro", icon: <SiAdobepremierepro />, color: "#9999FF" },
-    { name: "After Effects", icon: <SiAdobeaftereffects />, color: "#9999FF" },
-    { name: "Figma", icon: <SiFigma />, color: "#F24E1E" },
-    { name: "Blender", icon: <SiBlender />, color: "#F5792A" },
-    { name: "DaVinci Resolve", icon: <SiDavinciresolve />, color: "#FF6B6B" },
-    { name: "Audacity", icon: <SiAudacity />, color: "#0000CC" },
+// Toolkit categories — all monotone, brand accent only
+const TOOLKIT = [
+    {
+        id: "editing",
+        label: "Editing & Film",
+        tools: [
+            { name: "Adobe Premiere Pro", icon: FiFilm },
+            { name: "After Effects",      icon: FiBox },
+            { name: "DaVinci Resolve",    icon: FiMonitor },
+            { name: "Adobe Photoshop",    icon: FiImage },
+            { name: "Adobe Illustrator",  icon: FiPenTool },
+            { name: "Blender",            icon: SiBlender },
+            { name: "OBS",                icon: FiVideo },
+            { name: "Color Grading",      icon: FiLayers },
+            { name: "Audio Mixing",       icon: FiMic },
+            { name: "Scriptwriting",      icon: FiEdit3 },
+        ],
+    },
+    {
+        id: "frontend",
+        label: "Frontend Dev",
+        tools: [
+            { name: "React",        icon: SiReact },
+            { name: "Next.js",      icon: SiNextdotjs },
+            { name: "TypeScript",   icon: SiTypescript },
+            { name: "JavaScript",   icon: SiJavascript },
+            { name: "Tailwind CSS", icon: SiTailwindcss },
+            { name: "HTML & CSS",   icon: SiHtml5 },
+            { name: "Figma",        icon: SiFigma },
+            { name: "UI/UX Design", icon: FiLayout },
+        ],
+    },
+    {
+        id: "backend",
+        label: "Backend & Tools",
+        tools: [
+            { name: "Node.js",    icon: SiNodedotjs },
+            { name: "Express",    icon: SiExpress },
+            { name: "MongoDB",    icon: SiMongodb },
+            { name: "PostgreSQL", icon: SiPostgresql },
+            { name: "REST APIs",  icon: FiServer },
+            { name: "Git/GitHub", icon: SiGithub },
+        ],
+    },
+    {
+        id: "creator",
+        label: "Creator Skills",
+        tools: [
+            { name: "Cinematography",  icon: FiCamera },
+            { name: "Photography",     icon: FiCamera },
+            { name: "Reels Editing",   icon: FiFilm },
+            { name: "Motion Graphics", icon: FiStar },
+            { name: "Odia Content",    icon: FiPenTool },
+            { name: "Storytelling",    icon: FiEdit3 },
+        ],
+    },
 ];
 
-const DEV_SKILLS: Skill[] = [
-    { name: "React", icon: <SiReact />, color: "#61DAFB" },
-    { name: "Next.js", icon: <SiNextdotjs />, color: "#FFFFFF" },
-    { name: "TypeScript", icon: <SiTypescript />, color: "#3178C6" },
-    { name: "JavaScript", icon: <SiJavascript />, color: "#F7DF1E" },
-    { name: "HTML5", icon: <SiHtml5 />, color: "#E34F26" },
-    { name: "CSS3", icon: <SiCss3 />, color: "#1572B6" },
-    { name: "Tailwind CSS", icon: <SiTailwindcss />, color: "#06B6D4" },
-    { name: "Node.js", icon: <SiNodedotjs />, color: "#339933" },
-    { name: "MongoDB", icon: <SiMongodb />, color: "#47A248" },
-    { name: "Git", icon: <SiGit />, color: "#F05032" },
+const PROFICIENCY = [
+    { label: "Video Production", pct: 90 },
+    { label: "Frontend Dev",     pct: 80 },
+    { label: "Motion Graphics",  pct: 75 },
+    { label: "Backend / APIs",   pct: 65 },
 ];
 
 export default function Skills() {
-    const { ref, inView } = useScrollReveal();
-    const [activeTab, setActiveTab] = useState<"design" | "dev">("design");
+    const sectionRef = useRef<HTMLElement>(null);
 
-    const currentSkills = activeTab === "design" ? DESIGN_SKILLS : DEV_SKILLS;
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((e) => {
+                    if (e.isIntersecting) e.target.classList.add("visible");
+                });
+            },
+            { threshold: 0.06 }
+        );
+        const els = sectionRef.current?.querySelectorAll(".fade-in") ?? [];
+        els.forEach((el) => observer.observe(el));
+        return () => observer.disconnect();
+    }, []);
 
     return (
-        <section id="skills" className="relative">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <motion.div
-                    ref={ref}
-                    initial={{ opacity: 0, y: 50 }}
-                    animate={inView ? { opacity: 1, y: 0 } : {}}
-                    transition={{ duration: 0.6 }}
-                >
-                    {/* Section Title */}
-                    <div className="text-center mb-12">
-                        <h2 className="text-4xl md:text-5xl font-sans font-bold mb-4">
-                            My <span className="gradient-text">Skills</span>
-                        </h2>
-                        <p className="text-lg text-white/60">Tools and technologies I work with</p>
-                    </div>
+        <section
+            id="skills"
+            ref={sectionRef}
+            className="relative z-[1]"
+            style={{
+                background: "var(--surface)",
+                borderTop: "1px solid var(--border)",
+                borderBottom: "1px solid var(--border)",
+            }}
+        >
+            <div
+                style={{
+                    padding: "var(--section-py) var(--container-px)",
+                    maxWidth: "var(--container-max)",
+                    margin: "0 auto",
+                }}
+            >
+                {/* Section label */}
+                <div className="section-label fade-in">04 — Toolkit</div>
 
-                    {/* Tabs */}
-                    <div className="flex justify-center gap-4 mb-12">
-                        <button
-                            onClick={() => setActiveTab("design")}
-                            className={`px-8 py-3 rounded-full font-semibold transition-all duration-300 ${activeTab === "design"
-                                ? "bg-[#cc1a3e] text-white glow-pink"
-                                : "glass border border-white/20 text-white/70 hover:text-white hover:border-white/40"
-                                }`}
-                        >
-                            Design Skills
-                        </button>
-                        <button
-                            onClick={() => setActiveTab("dev")}
-                            className={`px-8 py-3 rounded-full font-semibold transition-all duration-300 ${activeTab === "dev"
-                                ? "bg-[#cc1a3e] text-white glow-pink"
-                                : "glass border border-white/20 text-white/70 hover:text-white hover:border-white/40"
-                                }`}
-                        >
-                            Development Skills
-                        </button>
-                    </div>
+                {/* Heading */}
+                <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-16 fade-in">
+                    <h2
+                        className="font-syne font-extrabold tracking-tight leading-tight"
+                        style={{ fontSize: "clamp(2rem, 5vw, 3.5rem)" }}
+                    >
+                        Creative Toolkit
+                    </h2>
+                    <p className="font-mono text-[0.68rem] text-[var(--muted)] tracking-[0.08em]" style={{ maxWidth: "280px" }}>
+                        Every tool I actually use in production — no fluff, no filler.
+                    </p>
+                </div>
 
-                    {/* Skills Grid */}
-                    <AnimatePresence mode="wait">
-                        <motion.div
-                            key={activeTab}
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -20 }}
-                            transition={{ duration: 0.3 }}
-                            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6"
+                {/* Toolkit clusters — wrapped in glass cards */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-8 md:gap-6">
+                    {TOOLKIT.map((cat, ci) => (
+                        <div
+                            key={cat.id}
+                            className="fade-in p-6"
+                            style={{
+                                animationDelay: `${ci * 80}ms`,
+                                background: "linear-gradient(180deg, var(--glass-border-subtle), var(--glass-bg-subtle))",
+                                border: "1px solid var(--glass-border)",
+                                borderRadius: "var(--radius-card)",
+                                backdropFilter: "blur(12px)",
+                            }}
                         >
-                            {currentSkills.map((skill, index) => (
-                                <motion.div
-                                    key={skill.name}
-                                    initial={{ opacity: 0, scale: 0.8 }}
-                                    animate={{ opacity: 1, scale: 1 }}
-                                    transition={{ duration: 0.3, delay: index * 0.05 }}
-                                    whileHover={{ scale: 1.05, y: -5 }}
-                                    className="glass-strong rounded-2xl p-6 border border-white/10 hover:border-white/30 transition-all duration-300 group relative overflow-hidden"
+                            {/* Category header */}
+                            <div
+                                className="flex items-center gap-3 mb-6 pb-4"
+                                style={{ borderBottom: "1px solid var(--glass-border)" }}
+                            >
+                                <h3
+                                    className="font-mono text-[0.65rem] uppercase tracking-[0.18em] font-bold"
+                                    style={{ color: "var(--text)" }}
                                 >
-                                    {/* Glow effect on hover */}
+                                    {cat.label}
+                                </h3>
+                            </div>
+
+                            {/* Tool pills — rounded glass */}
+                            <div className="flex flex-wrap gap-2 md:gap-2.5">
+                                {cat.tools.map(({ name, icon: Icon }, i) => (
                                     <div
-                                        className="absolute inset-0 opacity-0 group-hover:opacity-20 transition-opacity duration-300 blur-xl"
-                                        style={{ background: skill.color }}
-                                    />
-
-                                    {/* Content */}
-                                    <div className="relative z-10 flex flex-col items-center gap-3">
-                                        {/* Icon */}
-                                        <div
-                                            className="text-5xl transition-all duration-300 group-hover:scale-110"
-                                            style={{ color: skill.color }}
+                                        key={name}
+                                        className="fade-in flex items-center gap-2 transition-all duration-300 cursor-default"
+                                        style={{
+                                            padding: "8px 14px",
+                                            border: "1px solid var(--glass-border-light)",
+                                            background: "var(--glass-border-subtle)",
+                                            borderRadius: "var(--radius-sm)",
+                                            animationDelay: `${ci * 80 + i * 40}ms`,
+                                        }}
+                                        onMouseEnter={(e) => {
+                                            const el = e.currentTarget as HTMLElement;
+                                            el.style.borderColor = "rgba(249,115,22,0.35)";
+                                            el.style.background = "rgba(249,115,22,0.06)";
+                                            el.style.transform = "translateY(-2px)";
+                                            el.style.boxShadow = "0 4px 12px rgba(249,115,22,0.08)";
+                                        }}
+                                        onMouseLeave={(e) => {
+                                            const el = e.currentTarget as HTMLElement;
+                                            el.style.borderColor = "var(--glass-border)";
+                                            el.style.background = "var(--glass-bg-active)";
+                                            el.style.transform = "";
+                                            el.style.boxShadow = "";
+                                        }}
+                                    >
+                                        <Icon size={16} style={{ color: "var(--glass-text-dim)" }} />
+                                        <span
+                                            className="font-mono text-[0.62rem] tracking-[0.06em] uppercase"
+                                            style={{ color: "var(--glass-text-icon)" }}
                                         >
-                                            {skill.icon}
-                                        </div>
-
-                                        {/* Name */}
-                                        <h3 className="text-sm font-semibold text-center text-white/90 group-hover:text-white transition-colors">
-                                            {skill.name}
-                                        </h3>
+                                            {name}
+                                        </span>
                                     </div>
+                                ))}
+                            </div>
+                        </div>
+                    ))}
+                </div>
 
-                                    {/* Badge shine effect */}
-                                    <div className="absolute top-0 left-0 w-full h-full opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                        <div className="absolute top-0 left-0 w-1/2 h-full bg-gradient-to-r from-transparent via-white/10 to-transparent transform -skew-x-12 translate-x-full group-hover:translate-x-[-200%] transition-transform duration-700" />
-                                    </div>
-                                </motion.div>
-                            ))}
-                        </motion.div>
-                    </AnimatePresence>
-                </motion.div>
+                {/* Bottom proficiency bar — animated */}
+                <div
+                    className="mt-20 pt-10 flex flex-col sm:flex-row sm:items-center gap-6 fade-in"
+                    style={{ borderTop: "1px solid var(--border)" }}
+                >
+                    <span className="font-mono text-[0.65rem] text-[var(--muted)] tracking-[0.15em] uppercase flex-shrink-0">
+                        Proficiency
+                    </span>
+                    <div className="flex gap-8 flex-wrap">
+                        {PROFICIENCY.map(({ label, pct }) => (
+                            <div key={label} className="flex items-center gap-3">
+                                <div
+                                    className="w-20 h-[3px] rounded-full overflow-hidden"
+                                    style={{ background: "var(--glass-border)" }}
+                                >
+                                    <div
+                                        className="h-full rounded-full"
+                                        style={{
+                                            width: `${pct}%`,
+                                            background: "var(--accent)",
+                                            opacity: 0.7,
+                                            animation: "barFill 1.5s ease-out forwards",
+                                        }}
+                                    />
+                                </div>
+                                <span className="font-mono text-[0.58rem] text-[var(--muted)] tracking-[0.06em]">
+                                    {label}
+                                </span>
+                            </div>
+                        ))}
+                    </div>
+                </div>
             </div>
         </section>
     );

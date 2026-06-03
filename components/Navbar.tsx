@@ -1,125 +1,195 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { useState, useEffect, useMemo } from "react";
 import { NAV_LINKS } from "@/lib/constants";
+import ThemeToggle from "./ThemeToggle";
+
+import { User, Briefcase, Code, Smartphone, Award, Mail, Package, LayoutTemplate } from "lucide-react";
+import { ExpandableTabs, TabItem } from "./ui/expandable-tabs";
+
+const TABS: TabItem[] = [
+    { title: "About", icon: User, href: "#about" },
+    { title: "Work", icon: Briefcase, href: "#work" },
+    { title: "Skills", icon: Code, href: "#skills" },
+    { title: "Gadgets", icon: Smartphone, href: "#gadgets" },
+    { title: "Packages", icon: Package, href: "#packages" },
+    { title: "Content", icon: LayoutTemplate, href: "#content" },
+    { title: "Experience", icon: Award, href: "#experience" },
+    { title: "Contact", icon: Mail, href: "#contact" },
+];
 
 export default function Navbar() {
-    const [isScrolled, setIsScrolled] = useState(false);
-    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [scrolled, setScrolled]       = useState(false);
+    const [mobileOpen, setMobileOpen]   = useState(false);
     const [activeSection, setActiveSection] = useState("home");
 
+    // Scroll + active section detection
     useEffect(() => {
-        const handleScroll = () => {
-            setIsScrolled(window.scrollY > 50);
+        const onScroll = () => setScrolled(window.scrollY > 60);
+        window.addEventListener("scroll", onScroll);
 
-            // Update active section based on scroll position
-            const sections = NAV_LINKS.map((link) => link.href.substring(1));
-            const current = sections.find((section) => {
-                const element = document.getElementById(section);
-                if (element) {
-                    const rect = element.getBoundingClientRect();
-                    return rect.top <= 100 && rect.bottom >= 100;
-                }
-                return false;
-            });
-            if (current) setActiveSection(current);
+        const sectionIds = ["home", "about", "work", "skills", "gadgets", "packages", "content", "experience", "contact", "faq"];
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((e) => {
+                    if (e.isIntersecting) setActiveSection(e.target.id);
+                });
+            },
+            { rootMargin: "-40% 0px -55% 0px", threshold: 0 }
+        );
+        sectionIds.forEach((id) => {
+            const el = document.getElementById(id);
+            if (el) observer.observe(el);
+        });
+
+        return () => {
+            window.removeEventListener("scroll", onScroll);
+            observer.disconnect();
         };
-
-        window.addEventListener("scroll", handleScroll);
-        return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 
-    const scrollToSection = (href: string) => {
-        const element = document.querySelector(href);
-        if (element) {
-            element.scrollIntoView({ behavior: "smooth" });
-            setIsMobileMenuOpen(false);
-        }
+    const isActive = (href: string) => {
+        const id = href.replace("#", "");
+        return activeSection === id;
     };
 
+    const activeTabIndex = useMemo(() => {
+        const index = TABS.findIndex((t) => t.href === `#${activeSection}`);
+        return index !== -1 ? index : null;
+    }, [activeSection]);
+
+    const mailtoSubject = "Inquiry from Portfolio";
+    const mailtoLink = `mailto:sachinmallickff.19@gmail.com?subject=${encodeURIComponent(mailtoSubject)}`;
+
     return (
-        <motion.nav
-            initial={{ y: -100 }}
-            animate={{ y: 0 }}
-            transition={{ duration: 0.5 }}
-            className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${isScrolled ? "glass-strong shadow-lg" : "bg-transparent"
+        <>
+            <nav
+                className={`fixed top-0 left-0 right-0 z-[100] flex justify-between items-center px-8 md:px-14 transition-all duration-500 bg-transparent ${
+                    scrolled
+                        ? "py-3 backdrop-blur-2xl border-b shadow-lg border-[var(--glass-border)]"
+                        : "py-5 backdrop-blur-sm border-b border-transparent"
                 }`}
-        >
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex items-center justify-between h-16">
-                    {/* Logo */}
-                    <motion.div
-                        whileHover={{ scale: 1.05 }}
-                        className="flex items-center space-x-2 cursor-pointer"
-                        onClick={() => scrollToSection("#home")}
-                    >
+            >
+                {/* Subtle orange tint */}
+                <div className="absolute inset-0 bg-gradient-to-r from-[rgba(249,115,22,0.02)] to-transparent pointer-events-none" />
 
-                    </motion.div>
-
-                    {/* Desktop Navigation */}
-                    <div className="hidden md:flex items-center space-x-1">
-                        {NAV_LINKS.map((link) => (
-                            <button
-                                key={link.name}
-                                onClick={() => scrollToSection(link.href)}
-                                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${activeSection === link.href.substring(1)
-                                    ? "bg-[#cc1a3e] text-white glow-pink"
-                                    : "text-white/70 hover:text-white hover:bg-white/10"
-                                    }`}
-                            >
-                                {link.name}
-                            </button>
-                        ))}
-                    </div>
-
-                    {/* Mobile Menu Button */}
-                    <button
-                        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                        className="md:hidden p-2 rounded-lg hover:bg-white/10 transition-colors"
-                    >
-                        <div className="w-6 h-5 flex flex-col justify-between">
-                            <span
-                                className={`w-full h-0.5 bg-white transition-all duration-300 ${isMobileMenuOpen ? "rotate-45 translate-y-2" : ""
-                                    }`}
-                            />
-                            <span
-                                className={`w-full h-0.5 bg-white transition-all duration-300 ${isMobileMenuOpen ? "opacity-0" : ""
-                                    }`}
-                            />
-                            <span
-                                className={`w-full h-0.5 bg-white transition-all duration-300 ${isMobileMenuOpen ? "-rotate-45 -translate-y-2" : ""
-                                    }`}
-                            />
-                        </div>
-                    </button>
-                </div>
-            </div>
-
-            {/* Mobile Menu */}
-            {isMobileMenuOpen && (
-                <motion.div
-                    initial={{ opacity: 0, y: -20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -20 }}
-                    className="md:hidden glass-strong border-t border-white/10"
+                {/* Logo */}
+                <a
+                    href="#"
+                    className="relative z-10 font-bebas text-2xl tracking-[0.14em] uppercase leading-none text-[var(--text)] hover:text-[var(--accent)] transition-colors duration-300 group"
                 >
-                    <div className="px-4 py-4 space-y-2">
-                        {NAV_LINKS.map((link) => (
-                            <button
-                                key={link.name}
-                                onClick={() => scrollToSection(link.href)}
-                                className={`w-full text-left px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 ${activeSection === link.href.substring(1)
-                                        ? "bg-[#cc1a3e] text-white glow-pink"
-                                        : "text-white/70 hover:text-white hover:bg-white/10"
-                                    }`}
-                            >
-                                {link.name}
-                            </button>
-                        ))}
-                    </div>
-                </motion.div>
-            )}
-        </motion.nav>
+                    <span className="text-[var(--accent)] group-hover:text-[var(--accent2)]">{"//"}</span>{" "}
+                    @iamsachindada
+                </a>
+
+                {/* Desktop Centered Tabs */}
+                <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 z-10">
+                    <ExpandableTabs 
+                        tabs={TABS} 
+                        selectedIndex={activeTabIndex}
+                        activeColor="text-[var(--accent)]" 
+                        className="backdrop-blur-md"
+                    />
+                </div>
+
+                {/* Right side actions */}
+                <div className="hidden md:flex items-center gap-6 relative z-10">
+                    <a
+                        href={mailtoLink}
+                        className="relative overflow-hidden font-mono text-[0.65rem] font-bold uppercase tracking-[0.1em] px-5 py-2.5 text-[var(--accent)] transition-all duration-300 group"
+                        style={{
+                            border: "1px solid rgba(249,115,22,0.4)",
+                            borderRadius: "999px",
+                            boxShadow: "0 0 0 0 rgba(249,115,22,0)",
+                        }}
+                        onMouseEnter={(e) => {
+                            (e.currentTarget as HTMLElement).style.boxShadow = "0 0 20px rgba(249,115,22,0.2)";
+                            (e.currentTarget as HTMLElement).style.background = "rgba(249,115,22,0.1)";
+                        }}
+                        onMouseLeave={(e) => {
+                            (e.currentTarget as HTMLElement).style.boxShadow = "0 0 0 0 rgba(249,115,22,0)";
+                            (e.currentTarget as HTMLElement).style.background = "transparent";
+                        }}
+                    >
+                        Hire Me
+                    </a>
+                    <ThemeToggle />
+                </div>
+
+                {/* Mobile Hamburger */}
+                <button
+                    onClick={() => setMobileOpen(!mobileOpen)}
+                    className="md:hidden flex flex-col gap-1.5 z-[110] relative p-2"
+                    aria-label="Toggle menu"
+                >
+                    <span className={`block w-6 h-0.5 bg-[var(--text)] transition-all duration-300 origin-center ${mobileOpen ? "rotate-45 translate-y-2" : ""}`} />
+                    <span className={`block w-6 h-0.5 bg-[var(--text)] transition-all duration-300 ${mobileOpen ? "opacity-0 scale-x-0" : ""}`} />
+                    <span className={`block w-6 h-0.5 bg-[var(--text)] transition-all duration-300 origin-center ${mobileOpen ? "-rotate-45 -translate-y-2" : ""}`} />
+                </button>
+            </nav>
+
+            {/* Mobile Menu Overlay */}
+            <div
+                className={`fixed inset-0 z-[105] flex flex-col items-center justify-center gap-10 transition-all duration-500 md:hidden ${
+                    mobileOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+                }`}
+                style={{
+                    background: "var(--surface)",
+                    backdropFilter: "blur(24px)",
+                }}
+            >
+                {/* Ambient blob */}
+                <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 rounded-full pointer-events-none" style={{ background: "radial-gradient(circle, rgba(249,115,22,0.08), transparent 70%)" }} />
+
+                {NAV_LINKS.map((link, i) => (
+                    <a
+                        key={link.name}
+                        href={link.href}
+                        onClick={() => setMobileOpen(false)}
+                        className={`font-bebas text-5xl uppercase tracking-widest transition-colors duration-200 ${
+                            isActive(link.href) ? "text-[var(--accent)]" : "text-[var(--text)] hover:text-[var(--accent)]"
+                        }`}
+                        style={{ animationDelay: `${i * 60}ms` }}
+                    >
+                        {link.name}
+                    </a>
+                ))}
+
+                {/* Social links */}
+                <div className="flex gap-4 mt-2">
+                    {[
+                        { label: "Github", href: "https://github.com/Sachin1724" },
+                        { label: "LinkedIn", href: "https://www.linkedin.com/in/sachidananda-mallick/" },
+                        { label: "Instagram", href: "https://www.instagram.com/iamsachindada" },
+                        { label: "YouTube", href: "https://www.youtube.com/@sachindadaorginals" },
+                    ].map(({ label, href }) => (
+                        <a
+                            key={label}
+                            href={href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={() => setMobileOpen(false)}
+                            className="font-mono text-[0.6rem] tracking-[0.1em] uppercase text-[var(--muted)] hover:text-[var(--accent)] transition-colors duration-200"
+                            style={{
+                                padding: "6px 12px",
+                                border: "1px solid var(--glass-border)",
+                                borderRadius: "999px",
+                            }}
+                        >
+                            {label}
+                        </a>
+                    ))}
+                </div>
+
+                <a
+                    href={mailtoLink}
+                    onClick={() => setMobileOpen(false)}
+                    className="font-mono text-sm uppercase tracking-widest px-10 py-4 bg-[var(--accent)] text-[var(--bg)] font-bold mt-2 hover:bg-[var(--accent2)] transition-colors"
+                    style={{ borderRadius: "999px" }}
+                >
+                    Hire Me
+                </a>
+            </div>
+        </>
     );
 }

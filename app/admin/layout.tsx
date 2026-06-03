@@ -1,81 +1,166 @@
 "use client";
 
-import ProtectedRoute from '@/components/ProtectedRoute';
-import { useAuth } from '@/contexts/auth-context';
-import { useRouter, usePathname } from 'next/navigation';
-import { LogOut, FolderKanban, LayoutDashboard } from 'lucide-react';
-import toast from 'react-hot-toast';
+import { useState, ReactNode } from "react";
+import Link from "next/link";
 
-export default function AdminLayout({ children }: { children: React.ReactNode }) {
-    const { user, signOut } = useAuth();
-    const router = useRouter();
-    const pathname = usePathname();
+const ADMIN_PASSWORD = "sachin2026";
 
-    const handleSignOut = async () => {
-        try {
-            await signOut();
-            toast.success('Signed out successfully');
-            router.push('/admin/login');
-        } catch (error) {
-            toast.error('Failed to sign out');
+export default function AdminLayout({ children }: { children: ReactNode }) {
+    const [authenticated, setAuthenticated] = useState(false);
+    const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
+
+    const handleLogin = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (password === ADMIN_PASSWORD) {
+            setAuthenticated(true);
+            setError("");
+        } else {
+            setError("Incorrect password");
         }
     };
 
-    // Don't protect the login page
-    const isLoginPage = pathname === '/admin/login';
+    if (!authenticated) {
+        return (
+            <div
+                className="min-h-screen flex items-center justify-center px-6"
+                style={{ background: "var(--bg)", color: "var(--text)" }}
+            >
+                <div className="w-full max-w-sm">
+                    <h1
+                        className="text-3xl font-extrabold mb-2 tracking-tight"
+                        style={{ fontFamily: "'Syne', sans-serif" }}
+                    >
+                        <span style={{ color: "var(--accent)" }}>{"//"}</span> Admin
+                    </h1>
+                    <p
+                        className="text-sm mb-8"
+                        style={{
+                            color: "var(--muted)",
+                            fontFamily: "'Space Mono', monospace",
+                        }}
+                    >
+                        Enter password to access the dashboard.
+                    </p>
 
-    if (isLoginPage) {
-        return <>{children}</>;
+                    <form onSubmit={handleLogin} className="space-y-4">
+                        <input
+                            type="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            placeholder="Password"
+                            className="w-full px-4 py-3 text-sm outline-none transition-all duration-300"
+                            style={{
+                                background: "var(--surface)",
+                                border: "1px solid var(--border)",
+                                color: "var(--text)",
+                                fontFamily: "'Syne', sans-serif",
+                            }}
+                            onFocus={(e) =>
+                                (e.target.style.borderColor = "var(--accent)")
+                            }
+                            onBlur={(e) =>
+                                (e.target.style.borderColor = "var(--border)")
+                            }
+                        />
+                        {error && (
+                            <p
+                                className="text-xs"
+                                style={{
+                                    color: "#ef4444",
+                                    fontFamily: "'Space Mono', monospace",
+                                }}
+                            >
+                                {error}
+                            </p>
+                        )}
+                        <button
+                            type="submit"
+                            className="btn-clip w-full py-3 text-sm font-bold uppercase tracking-wider cursor-pointer transition-all duration-200 hover:-translate-y-0.5"
+                            style={{
+                                background: "var(--accent)",
+                                color: "#000",
+                                fontFamily: "'Space Mono', monospace",
+                                border: "none",
+                            }}
+                        >
+                            Enter
+                        </button>
+                    </form>
+
+                    <Link
+                        href="/"
+                        className="block mt-6 text-center text-xs hover:underline"
+                        style={{
+                            color: "var(--muted)",
+                            fontFamily: "'Space Mono', monospace",
+                        }}
+                    >
+                        ← Back to site
+                    </Link>
+                </div>
+            </div>
+        );
     }
 
     return (
-        <ProtectedRoute>
-            <div className="min-h-screen bg-[#0a0a0a]">
-                {/* Sidebar */}
-                <aside className="fixed left-0 top-0 h-full w-64 glass border-r border-white/10 p-6 z-50">
-                    <div className="flex flex-col h-full">
-                        {/* Logo */}
-                        <div className="mb-8">
-                            <h2 className="text-2xl font-bold">
-                                <span className="gradient-text">Admin</span> Panel
-                            </h2>
-                            <p className="text-sm text-white/40 mt-1">{user?.email}</p>
-                        </div>
+        <div className="min-h-screen" style={{ background: "var(--bg)", color: "var(--text)" }}>
+            {/* Sidebar */}
+            <aside
+                className="fixed left-0 top-0 h-full w-64 p-6 z-50 hidden md:flex flex-col"
+                style={{
+                    background: "var(--surface)",
+                    borderRight: "1px solid var(--border)",
+                }}
+            >
+                <div className="mb-8">
+                    <h2
+                        className="text-2xl font-extrabold"
+                        style={{ fontFamily: "'Syne', sans-serif" }}
+                    >
+                        <span style={{ color: "var(--accent)" }}>Admin</span> Panel
+                    </h2>
+                    <p
+                        className="text-xs mt-1"
+                        style={{
+                            color: "var(--muted)",
+                            fontFamily: "'Space Mono', monospace",
+                        }}
+                    >
+                        Portfolio Management
+                    </p>
+                </div>
 
-                        {/* Navigation */}
-                        <nav className="flex-1 space-y-2">
-                            <button
-                                onClick={() => router.push('/admin')}
-                                className="w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-white/5 transition-colors text-white/80 hover:text-white"
-                            >
-                                <LayoutDashboard className="w-5 h-5" />
-                                Dashboard
-                            </button>
-                            <button
-                                onClick={() => router.push('/admin/projects')}
-                                className="w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-white/5 transition-colors text-white/80 hover:text-white"
-                            >
-                                <FolderKanban className="w-5 h-5" />
-                                Projects
-                            </button>
-                        </nav>
+                <nav className="flex-1 space-y-2">
+                    <Link
+                        href="/admin"
+                        className="block px-4 py-3 rounded-lg text-sm transition-colors"
+                        style={{ color: "var(--text)" }}
+                    >
+                        📊 Dashboard
+                    </Link>
+                </nav>
 
-                        {/* Sign Out */}
-                        <button
-                            onClick={handleSignOut}
-                            className="w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-white/5 transition-colors text-white/60 hover:text-white"
-                        >
-                            <LogOut className="w-5 h-5" />
-                            Sign Out
-                        </button>
-                    </div>
-                </aside>
+                <div className="space-y-2">
+                    <button
+                        onClick={() => setAuthenticated(false)}
+                        className="w-full text-left px-4 py-3 rounded-lg text-sm transition-colors"
+                        style={{ color: "var(--muted)" }}
+                    >
+                        🚪 Sign Out
+                    </button>
+                    <Link
+                        href="/"
+                        className="block px-4 py-3 rounded-lg text-sm"
+                        style={{ color: "var(--muted)" }}
+                    >
+                        ← Back to site
+                    </Link>
+                </div>
+            </aside>
 
-                {/* Main Content */}
-                <main className="ml-64 p-8">
-                    {children}
-                </main>
-            </div>
-        </ProtectedRoute>
+            {/* Main Content */}
+            <main className="md:ml-64 p-6 md:p-8">{children}</main>
+        </div>
     );
 }

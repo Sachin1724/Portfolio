@@ -1,77 +1,259 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { useScrollReveal } from "@/hooks/useScrollReveal";
+import { useEffect, useRef } from "react";
+import { FiInstagram, FiArrowUpRight, FiCamera, FiFilm, FiMonitor, FiScissors, FiImage, FiBox } from "react-icons/fi";
+import { SiReact, SiNextdotjs, SiTypescript, SiTailwindcss, SiNodedotjs, SiFigma, SiBlender } from "react-icons/si";
+
+// Skill pills — monotone with icons
+const SKILL_PILLS = [
+    { name: "React",           icon: SiReact },
+    { name: "Next.js",         icon: SiNextdotjs },
+    { name: "TypeScript",      icon: SiTypescript },
+    { name: "Tailwind CSS",    icon: SiTailwindcss },
+    { name: "Premiere Pro",    icon: FiFilm },
+    { name: "After Effects",   icon: FiBox },
+    { name: "DaVinci Resolve", icon: FiMonitor },
+    { name: "Motion Graphics", icon: FiScissors },
+    { name: "Cinematography",  icon: FiCamera },
+    { name: "Blender",         icon: SiBlender },
+    { name: "Node.js",         icon: SiNodedotjs },
+    { name: "Figma",           icon: SiFigma },
+];
+
+const CREATOR_STATS = [
+    { value: "2.4K+", label: "Followers" },
+    { value: "77",    label: "Posts" },
+    { value: "107K",  label: "Views/Month" },
+    { value: "12+",   label: "Clients Served" },
+];
 
 export default function About() {
-    const { ref, inView } = useScrollReveal();
+    const sectionRef = useRef<HTMLElement>(null);
+
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((e, i) => {
+                    if (e.isIntersecting) {
+                        setTimeout(() => e.target.classList.add("visible"), i * 70);
+                    }
+                });
+            },
+            { threshold: 0.08 }
+        );
+        const els = sectionRef.current?.querySelectorAll(".fade-in") ?? [];
+        els.forEach((el) => observer.observe(el));
+        return () => observer.disconnect();
+    }, []);
 
     return (
-        <section id="about" className="relative">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <motion.div
-                    ref={ref}
-                    initial={{ opacity: 0, y: 50 }}
-                    animate={inView ? { opacity: 1, y: 0 } : {}}
-                    transition={{ duration: 0.6 }}
-                >
-                    {/* Section Title */}
-                    <h2 className="text-4xl md:text-5xl font-sans font-bold text-center mb-12">
-                        About <span className="gradient-text">Me</span>
+        <section
+            id="about"
+            ref={sectionRef}
+            className="relative z-[1]"
+            style={{
+                padding: "var(--section-py) var(--container-px)",
+                maxWidth: "var(--container-max)",
+                margin: "0 auto",
+                background: "transparent",
+            }}
+        >
+            {/* Section label */}
+            <div className="section-label fade-in">01 — About</div>
+
+            {/* Two-column grid */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-start">
+                {/* ── LEFT: Heading + Bio + Pills ── */}
+                <div className="space-y-8 md:space-y-10 fade-in">
+                    <h2
+                        className="font-syne font-extrabold tracking-tight leading-[1.0]"
+                        style={{ fontSize: "clamp(2.2rem, 5vw, 4rem)" }}
+                    >
+                        Builder.
+                        <br />
+                        Creator.
+                        <br />
+                        <span style={{ color: "var(--accent)" }}>Odia.</span>
                     </h2>
 
-                    <div className="grid md:grid-cols-2 gap-8 items-start">
-                        {/* Left Column */}
-                        <div className="space-y-6">
-                            <p className="text-lg text-white/70 leading-relaxed">
-                                I&apos;m Sachidananda Mallick, but you can call me Sachin. I&apos;m passionate about creating digital experiences
-                                that sit at the intersection of design, storytelling, and technology.
-                            </p>
-                            <p className="text-lg text-white/70 leading-relaxed">
-                                As a Computer Science student at BPUT, I&apos;ve developed a unique skill set that spans both creative and
-                                technical domains. Whether I&apos;m editing a cinematic video, designing an interface, or building a web application,
-                                I bring the same level of attention to detail and creativity.
-                            </p>
-                            <p className="text-lg text-white/70 leading-relaxed">
-                                I&apos;ve had the opportunity to participate in multiple hackathons, collaborate with Google Developer Groups (GDG),
-                                and work on diverse projects that challenge me to grow as both a creator and a developer.
-                            </p>
+                    <p className="text-[1.05rem] text-[var(--muted)] leading-[1.8]" style={{ maxWidth: "520px" }}>
+                        I&apos;m a{" "}
+                        <strong className="text-[var(--text)]">B.Tech student from Odisha</strong>{" "}
+                        who builds things on the internet — websites, reels, motion graphics, and
+                        content that actually makes sense to Odia-speaking people.
+                        <br /><br />
+                        My audience is mostly{" "}
+                        <span style={{ color: "var(--accent)", fontWeight: 600 }}>
+                            Odia developers and students
+                        </span>{" "}
+                        learning to code. I make content in Odia so that language is never a barrier.
+                        <br /><br />
+                        I take{" "}
+                        <strong className="text-[var(--text)]">freelance projects</strong> —
+                        from startup landing pages to full video editing retainers. No unnecessary
+                        calls. Just clean work delivered on time.
+                    </p>
+
+                    {/* Monotone skill pills with icons — rounded glass */}
+                    <div>
+                        <div className="font-mono text-[0.62rem] text-[var(--muted)] tracking-[0.15em] uppercase mb-5">
+                            Skill Stack
                         </div>
-
-                        {/* Right Column - Current Status */}
-                        <div className="space-y-6">
-                            <motion.div
-                                whileHover={{ scale: 1.02 }}
-                                className="glass-strong rounded-2xl p-8 border border-white/20 relative overflow-hidden"
-                            >
-                                {/* Gradient accent */}
-                                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary via-secondary-1 to-secondary-2" />
-
-                                <h3 className="text-xl font-sans font-bold mb-4">Currently</h3>
-                                <p className="text-white/80 leading-relaxed">
-                                    B.Tech CSE student, building projects at the intersection of media and technology.
-                                    Exploring new ways to blend visual storytelling with code.
-                                </p>
-                            </motion.div>
-
-                            {/* Interests */}
-                            <div className="space-y-4">
-                                <h3 className="text-xl font-sans font-bold">Interests</h3>
-                                <div className="flex flex-wrap gap-3">
-                                    {["Video Editing", "Web Development", "UI/UX Design", "Motion Graphics", "Problem Solving", "Content Creation"].map((interest) => (
-                                        <motion.span
-                                            key={interest}
-                                            whileHover={{ scale: 1.05 }}
-                                            className="px-4 py-2 glass rounded-full border border-white/20 text-sm font-medium"
-                                        >
-                                            {interest}
-                                        </motion.span>
-                                    ))}
-                                </div>
-                            </div>
+                        <div className="flex flex-wrap gap-2 md:gap-2.5">
+                            {SKILL_PILLS.map(({ name, icon: Icon }) => (
+                                <span
+                                    key={name}
+                                    className="fade-in flex items-center gap-2 font-mono text-[0.62rem] tracking-[0.06em] uppercase transition-all duration-300 cursor-default"
+                                    style={{
+                                        padding: "8px 14px",
+                                        color: "var(--glass-text-icon)",
+                                        borderRadius: "var(--radius-sm)",
+                                        border: "1px solid var(--glass-border-light)",
+                                        background: "var(--glass-border-subtle)",
+                                        backdropFilter: "blur(8px)",
+                                    }}
+                                    onMouseEnter={(e) => {
+                                        const el = e.currentTarget as HTMLElement;
+                                        el.style.borderColor = "rgba(249,115,22,0.4)";
+                                        el.style.color = "var(--accent)";
+                                        el.style.background = "rgba(249,115,22,0.06)";
+                                        el.style.transform = "translateY(-2px)";
+                                        el.style.boxShadow = "0 4px 16px rgba(249,115,22,0.1)";
+                                    }}
+                                    onMouseLeave={(e) => {
+                                        const el = e.currentTarget as HTMLElement;
+                                        el.style.borderColor = "var(--glass-border-light)";
+                                        el.style.color = "var(--glass-text-icon)";
+                                        el.style.background = "var(--glass-border-subtle)";
+                                        el.style.transform = "";
+                                        el.style.boxShadow = "";
+                                    }}
+                                >
+                                    <Icon size={16} style={{ color: "var(--glass-text-dim)" }} />
+                                    {name}
+                                </span>
+                            ))}
                         </div>
                     </div>
-                </motion.div>
+                </div>
+
+                {/* ── RIGHT: Stats + Currently Building ── */}
+                <div className="space-y-8 fade-in">
+                    {/* Creator stats grid — glass cards */}
+                    <div className="grid grid-cols-2 gap-5">
+                        {CREATOR_STATS.map(({ value, label }) => (
+                            <div
+                                key={label}
+                                className="relative overflow-hidden p-6 transition-all duration-400"
+                                style={{
+                                    background: "linear-gradient(180deg, var(--glass-bg), var(--glass-bg-subtle))",
+                                    border: "1px solid var(--glass-border)",
+                                    borderRadius: "var(--radius-card)",
+                                    backdropFilter: "blur(12px)",
+                                }}
+                                onMouseEnter={(e) => {
+                                    (e.currentTarget as HTMLElement).style.borderColor = "rgba(249,115,22,0.3)";
+                                    (e.currentTarget as HTMLElement).style.transform = "translateY(-4px)";
+                                    (e.currentTarget as HTMLElement).style.boxShadow = "0 16px 48px rgba(0,0,0,0.4), 0 0 20px rgba(249,115,22,0.06)";
+                                }}
+                                onMouseLeave={(e) => {
+                                    (e.currentTarget as HTMLElement).style.borderColor = "var(--glass-border)";
+                                    (e.currentTarget as HTMLElement).style.transform = "";
+                                    (e.currentTarget as HTMLElement).style.boxShadow = "";
+                                }}
+                            >
+                                <div
+                                    className="font-syne text-3xl font-extrabold leading-none mb-2"
+                                    style={{ color: "var(--text)" }}
+                                >
+                                    {value}
+                                </div>
+                                <div className="font-mono text-[0.6rem] text-[var(--muted)] uppercase tracking-[0.12em]">
+                                    {label}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+
+                    {/* Currently building — glass card */}
+                    <div
+                        className="p-6"
+                        style={{
+                            background: "linear-gradient(180deg, var(--glass-bg), var(--glass-bg-subtle))",
+                            border: "1px solid var(--glass-border)",
+                            borderRadius: "var(--radius-card)",
+                            backdropFilter: "blur(12px)",
+                        }}
+                    >
+                        <div className="flex items-center gap-2 mb-5">
+                            <span
+                                className="w-2 h-2 rounded-full flex-shrink-0"
+                                style={{
+                                    background: "var(--accent)",
+                                    boxShadow: "0 0 8px var(--accent)",
+                                    animation: "ambientPulse 2s ease-in-out infinite",
+                                }}
+                            />
+                            <span className="font-mono text-[0.62rem] text-[var(--accent)] tracking-[0.15em] uppercase">
+                                Currently Building
+                            </span>
+                        </div>
+                        <div className="space-y-0">
+                            {[
+                                { title: "Bhasa Odia — TTS Platform", tag: "Open Source" },
+                                { title: "Client Reels Retainer",    tag: "Freelance"   },
+                                { title: "Dev Tutorials in Odia",    tag: "Content"     },
+                            ].map(({ title, tag }) => (
+                                <div key={title} className="flex items-center justify-between py-3 border-b border-[var(--glass-border)] last:border-0">
+                                    <span className="font-syne text-sm font-semibold text-[var(--text)]">{title}</span>
+                                    <span
+                                        className="font-mono text-[0.55rem] tracking-[0.1em] uppercase px-2 py-0.5"
+                                        style={{ border: "1px solid var(--glass-border-light)", color: "var(--muted)", borderRadius: "var(--radius-sm)" }}
+                                    >
+                                        {tag}
+                                    </span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* DM CTA — glass card */}
+                    <a
+                        href="https://instagram.com/iamsachindada"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center justify-between w-full px-6 py-5 transition-all duration-300 group"
+                        style={{
+                            background: "linear-gradient(180deg, var(--glass-bg), var(--glass-bg-subtle))",
+                            border: "1px solid var(--glass-border)",
+                            borderRadius: "var(--radius-card)",
+                            backdropFilter: "blur(12px)",
+                        }}
+                        onMouseEnter={(e) => {
+                            (e.currentTarget as HTMLElement).style.borderColor = "rgba(249,115,22,0.3)";
+                            (e.currentTarget as HTMLElement).style.transform = "translateY(-4px)";
+                            (e.currentTarget as HTMLElement).style.boxShadow = "0 16px 48px rgba(0,0,0,0.4), 0 0 20px rgba(249,115,22,0.06)";
+                        }}
+                        onMouseLeave={(e) => {
+                            (e.currentTarget as HTMLElement).style.borderColor = "var(--glass-border)";
+                            (e.currentTarget as HTMLElement).style.transform = "";
+                            (e.currentTarget as HTMLElement).style.boxShadow = "";
+                        }}
+                    >
+                        <div className="flex items-center gap-3">
+                            <FiInstagram size={18} style={{ color: "var(--muted)" }} />
+                            <div>
+                                <div className="font-syne text-sm font-bold text-[var(--text)]">@iamsachindada</div>
+                                <div className="font-mono text-[0.6rem] text-[var(--muted)] mt-0.5">DM me on Instagram</div>
+                            </div>
+                        </div>
+                        <FiArrowUpRight
+                            size={18}
+                            className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                            style={{ color: "var(--muted)" }}
+                        />
+                    </a>
+                </div>
             </div>
         </section>
     );

@@ -1,19 +1,24 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import dynamic from "next/dynamic";
 import Preloader from "@/components/Preloader";
+import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
-import NavbarWrapper from "@/components/NavbarWrapper";
-import HandsOn from "@/components/HandsOn";
 
-import Education from "@/components/Education";
-import Carousel3D from "@/components/Carousel3D";
-import Work from "@/components/Work";
-import Skills from "@/components/Skills";
-import Equipment from "@/components/Equipment";
-import Experience from "@/components/Experience";
-import Contact from "@/components/Contact";
-import AdminAccessButton from "@/components/AdminAccessButton";
+const SkillsTicker = dynamic(() => import("@/components/SkillsTicker"), { ssr: true });
+const ClientScroller = dynamic(() => import("@/components/ClientScroller"), { ssr: true });
+const About = dynamic(() => import("@/components/About"), { ssr: true });
+const Work = dynamic(() => import("@/components/Work"), { ssr: true });
+const Skills = dynamic(() => import("@/components/Skills"), { ssr: true });
+const Gadgets = dynamic(() => import("@/components/Gadgets"), { ssr: true });
+const Packages = dynamic(() => import("@/components/Packages"), { ssr: true });
+const ContentSection = dynamic(() => import("@/components/ContentSection"), { ssr: true });
+const Experience = dynamic(() => import("@/components/Experience"), { ssr: true });
+const Testimonials = dynamic(() => import("@/components/Testimonials"), { ssr: true });
+const FAQ = dynamic(() => import("@/components/FAQ"), { ssr: true });
+const Contact = dynamic(() => import("@/components/Contact"), { ssr: true });
+const Footer = dynamic(() => import("@/components/Footer"), { ssr: true });
 
 export default function Home() {
     const [loading, setLoading] = useState(true);
@@ -21,72 +26,55 @@ export default function Home() {
 
     useEffect(() => {
         setMounted(true);
-        // Simulate loading delay
-        const timer = setTimeout(() => {
-            setLoading(false);
-        }, 2500);
-
+        const timer = setTimeout(() => setLoading(false), 2500);
         return () => clearTimeout(timer);
     }, []);
 
-    if (!mounted) {
-        return null;
-    }
+    if (!mounted) return null;
 
     return (
         <>
             {loading && <Preloader />}
-            <NavbarWrapper isLoading={loading} />
-            <AdminAccessButton />
+            <Navbar />
             <main className={`transition-opacity duration-500 ${loading ? "opacity-0" : "opacity-100"}`}>
+                {/* 01 Hero */}
                 <Hero />
-                <HandsOn />
-                <Skills />
+
+                {/* Ticker + Clients */}
+                <SkillsTicker />
+                <ClientScroller />
+
+                {/* 02 About */}
+                <About />
+
+                {/* 03 Work — Media + Dev Projects */}
                 <Work />
-                <Equipment />
+
+                {/* 04 Skills Panel */}
+                <Skills />
+
+                {/* 05 Gadgets */}
+                <Gadgets />
+
+                {/* 06 Packages / Services */}
+                <Packages />
+
+                {/* 07 Content / Instagram */}
+                <ContentSection />
+
+                {/* 08 Experience & Education */}
                 <Experience />
-                <Education />
-                <Carousel3D
-                    items={[
-                        {
-                            id: 1,
-                            image: "/assets/images/Carousel1.jpg",
-                            title: "SIH 2025",
-                            description: "Media Coverage and Official Video Partner for SIH 2025.",
-                            link: "https://youtu.be/qhUdQNE2fvg?si=bEGqtF-IVQfmVsbX" // Add your actual project link here
-                        },
-                        {
-                            id: 2,
-                            image: "/assets/images/Carousel2.JPG",
-                            title: "GDG DEVFEST 2025",
-                            description: "Ofiicial Media partner for DEVFEST 2025 Ranchi in collaboration with Kizen Production. ",
-                            link: "https://www.instagram.com/reel/DPwqsY-EiEp/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==" // Add your actual project link here
-                        },
-                        {
-                            id: 3,
-                            image: "/assets/images/Carousel3.jpg",
-                            title: "SIH Coverage",
-                            description: "Media Coverage for SIH 2025.",
-                            link: "https://www.instagram.com/p/DSC2bX4k9VP/" // Add your actual project link here
-                        },
-                        {
-                            id: 4,
-                            image: "/assets/images/Carousel4.jpg",
-                            title: "Podcast Production",
-                            description: "Podcast Production for The Lazy IITAN.",
-                            link: "https://drive.google.com/file/d/1UVf0LLjRTB0ZkMZYWd_hTPkzbRI892RE/view?usp=drive_link" // Add your actual project link here
-                        },
-                        {
-                            id: 5,
-                            image: "/assets/images/Carousel5.jpg",
-                            title: "Thumbnail Design",
-                            description: "Thumbnail Design for Podcast Production.",
-                            link: "https://drive.google.com/drive/folders/1TXVd9L9Sr-JPgLhpsY2cnzuM3-EIToHD?usp=drive_link" // Add your actual project link here
-                        },
-                    ]}
-                />
+
+                {/* 09 Testimonials */}
+                <Testimonials />
+
+                {/* 10 FAQ */}
+                <FAQ />
+
+                {/* 11 Contact */}
                 <Contact />
             </main>
+            <Footer />
         </>
     );
 }

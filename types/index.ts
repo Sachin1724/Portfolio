@@ -9,7 +9,7 @@ export interface Project {
     github_url?: string;
     live_url?: string;
     link?: string;
-    category: "media" | "development";
+    category: "media" | "dev";
 }
 
 export interface Skill {
@@ -26,6 +26,7 @@ export interface EquipmentItem {
     icon: string;
     type: string;
     model: string;
+    image?: string;
     usage: string;
     specs?: string[];
 }
@@ -41,5 +42,38 @@ export interface EducationItem {
     degree: string;
     institute: string;
     duration: string;
+    description: string;
+}
+
+export interface PackageItem {
+    id: string;
+    badge: string;
+    name: string;
+    price: string;
+    pricePer: string;
+    priceNote?: string;
+    description: string;
+    features: string[];
+    ctaText: string;
+    ctaLink: string;
+    featured?: boolean;
+    emailSubject: string;
+}
+
+export interface ClientItem {
+    name: string;
+    logo: string;
+    fallbackEmoji: string;
+}
+
+export interface ContentCard {
+    icon: string;
+    title: string;
+    subtitle: string;
+}
+
+export interface ProcessStep {
+    num: string;
+    title: string;
     description: string;
 }

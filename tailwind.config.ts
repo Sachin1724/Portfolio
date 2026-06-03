@@ -9,35 +9,55 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // New Dark Theme Color Palette
-        background: "#00224D", // Deep Navy Blue
-        "background-dark": "#001a3d", // Darker Navy
-        primary: "#FF204E", // Bright Pink/Red
-        "primary-dark": "#cc1a3e", // Darker Pink
-        secondary: {
-          1: "#A0153E", // Crimson
-          2: "#5D0E41", // Dark Burgundy
-        },
-        accent: "#FFFFFF", // White
-
-        // Rainbow button colors
-        "color-1": "hsl(var(--color-1))",
-        "color-2": "hsl(var(--color-2))",
-        "color-3": "hsl(var(--color-3))",
-        "color-4": "hsl(var(--color-4))",
-        "color-5": "hsl(var(--color-5))",
+        bg: "#0a0a0f",
+        surface: "#111118",
+        border: "#1e1e2e",
+        accent: "#f97316",
+        "accent-2": "#fb923c",
+        "text-primary": "#e8e8f0",
+        muted: "#6b6b80",
+        odia: "#22c55e",
       },
       fontFamily: {
-        sans: ["var(--font-general-sans)", "Inter", "system-ui", "sans-serif"],
-        display: ["var(--font-plus-jakarta)", "Inter", "system-ui", "sans-serif"],
+        syne: ["Syne", "sans-serif"],
+        mono: ["Space Mono", "monospace"],
+        bebas: ["Bebas Neue", "sans-serif"],
       },
       animation: {
-        "fade-in": "fadeIn 0.5s ease-in-out",
+        ticker: "ticker 20s linear infinite",
+        "client-scroll": "clientScroll 25s linear infinite",
+        "profile-float": "profileFloat 6s ease-in-out infinite",
+        "ring-spin": "profileRingSpin 8s linear infinite",
+        "page-load": "pageLoad 1s ease-out forwards",
+        "fade-in": "fadeIn 0.6s ease-out",
         "slide-up": "slideUp 0.5s ease-out",
-        "pulse-slow": "pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite",
-        rainbow: "rainbow var(--speed, 2s) infinite linear",
+        "ambient-pulse": "ambientPulse 4s ease-in-out infinite",
+        "glow-pulse": "glowPulse 2s ease-in-out infinite",
+        "border-glow": "borderGlow 3s ease-in-out infinite",
+        "float": "float 2s ease-in-out infinite",
+        "count-up": "countUp 0.5s ease forwards",
       },
       keyframes: {
+        ticker: {
+          from: { transform: "translateX(0)" },
+          to: { transform: "translateX(-50%)" },
+        },
+        clientScroll: {
+          from: { transform: "translateX(0)" },
+          to: { transform: "translateX(-50%)" },
+        },
+        profileFloat: {
+          "0%, 100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(-12px)" },
+        },
+        profileRingSpin: {
+          from: { transform: "rotate(0deg)" },
+          to: { transform: "rotate(360deg)" },
+        },
+        pageLoad: {
+          from: { opacity: "0", filter: "blur(6px)" },
+          to: { opacity: "1", filter: "blur(0)" },
+        },
         fadeIn: {
           "0%": { opacity: "0" },
           "100%": { opacity: "1" },
@@ -45,10 +65,6 @@ const config: Config = {
         slideUp: {
           "0%": { transform: "translateY(20px)", opacity: "0" },
           "100%": { transform: "translateY(0)", opacity: "1" },
-        },
-        rainbow: {
-          "0%": { "background-position": "0%" },
-          "100%": { "background-position": "200%" },
         },
       },
     },

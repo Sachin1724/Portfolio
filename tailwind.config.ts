@@ -19,9 +19,9 @@ const config: Config = {
         odia: "#22c55e",
       },
       fontFamily: {
-        syne: ["Syne", "sans-serif"],
-        mono: ["Space Mono", "monospace"],
-        bebas: ["Bebas Neue", "sans-serif"],
+        syne: ["var(--font-syne)", "sans-serif"],
+        mono: ["var(--font-mono)", "monospace"],
+        bebas: ["var(--font-bebas)", "sans-serif"],
       },
       animation: {
         ticker: "ticker 20s linear infinite",

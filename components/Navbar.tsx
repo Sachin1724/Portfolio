@@ -64,7 +64,7 @@ export default function Navbar() {
     return (
         <>
             <nav
-                className={`fixed top-0 left-0 right-0 z-[100] flex justify-between items-center px-8 md:px-14 transition-all duration-500 bg-transparent ${
+                className={`fixed top-0 left-0 right-0 z-[100] flex justify-between items-center px-5 md:px-14 transition-all duration-500 bg-transparent ${
                     scrolled
                         ? "py-3 backdrop-blur-2xl border-b shadow-lg border-[var(--glass-border)]"
                         : "py-5 backdrop-blur-sm border-b border-transparent"
@@ -76,7 +76,7 @@ export default function Navbar() {
                 {/* Logo */}
                 <a
                     href="#"
-                    className="relative z-10 font-bebas text-2xl tracking-[0.14em] uppercase leading-none text-[var(--text)] hover:text-[var(--accent)] transition-colors duration-300 group"
+                    className="relative z-10 font-bebas text-xl md:text-2xl tracking-[0.10em] md:tracking-[0.14em] uppercase leading-none text-[var(--text)] hover:text-[var(--accent)] transition-colors duration-300 group"
                 >
                     <span className="text-[var(--accent)] group-hover:text-[var(--accent2)]">{"//"}</span>{" "}
                     @iamsachindada

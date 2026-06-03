@@ -44,6 +44,7 @@ export default function Hero() {
                     fill
                     priority
                     sizes="100vw"
+                    quality={60}
                     className="object-cover object-center"
                     style={{ opacity: 0.4 }}
                 />
@@ -174,6 +175,14 @@ export default function Hero() {
                             >
                                 <span>✦</span> Connect
                             </a>
+                            <a
+                                href="/assets/Resume_New.pdf"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="glass-btn"
+                            >
+                                <span>📄</span> Resume
+                            </a>
                         </div>
                     </motion.div>
 
@@ -211,6 +220,7 @@ export default function Hero() {
                                 fill
                                 sizes="320px"
                                 priority
+                                quality={85}
                                 className="object-cover transition-transform duration-700 group-hover:scale-105"
                             />
                             {/* Dark gradient overlay for text readability */}

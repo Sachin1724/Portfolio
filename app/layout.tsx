@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
-import { Syne } from "next/font/google";
+import { Syne, Space_Mono, Bebas_Neue } from "next/font/google";
 import "./globals.css";
 import CursorGlow from "@/components/CursorGlow";
 import SmoothScroll from "@/components/SmoothScroll";
 
-const syne = Syne({ subsets: ["latin"] });
-
+const syne = Syne({ subsets: ["latin"], variable: "--font-syne" });
+const spaceMono = Space_Mono({ subsets: ["latin"], weight: ["400", "700"], variable: "--font-mono" });
+const bebasNeue = Bebas_Neue({ subsets: ["latin"], weight: ["400"], variable: "--font-bebas" });
 export const metadata: Metadata = {
     title: "Sachin Dada — Cinematic Creator & Dev Freelancer",
     description:
@@ -52,7 +53,7 @@ export default function RootLayout({
                     }}
                 />
             </head>
-            <body className="antialiased" suppressHydrationWarning>
+            <body className={`antialiased ${syne.variable} ${spaceMono.variable} ${bebasNeue.variable}`} suppressHydrationWarning>
                 <SmoothScroll>
                     {children}
                 </SmoothScroll>

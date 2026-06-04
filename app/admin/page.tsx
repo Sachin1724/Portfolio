@@ -86,7 +86,7 @@ export default function AdminDashboard() {
                         Local CMS
                     </h1>
                     <p className="text-sm font-mono text-[var(--muted)]">
-                        Manage your portfolio projects. Changes are saved locally to data/projects.json
+                        Manage your portfolio projects. Changes are saved to Upstash Redis (production) or local JSON (dev).
                     </p>
                 </div>
                 

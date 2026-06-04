@@ -9,6 +9,7 @@ export interface Project {
     github_url?: string;
     live_url?: string;
     link?: string;
+    video_url?: string;
     category: "media" | "dev";
 }
 

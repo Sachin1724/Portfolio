@@ -11,6 +11,7 @@ export default function AdminDashboard() {
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [message, setMessage] = useState("");
+    const [isError, setIsError] = useState(false);
 
     useEffect(() => {
         fetch("/api/projects")
@@ -34,11 +35,15 @@ export default function AdminDashboard() {
             });
             if (res.ok) {
                 setMessage("Projects saved successfully! Refresh frontend to see changes.");
+                setIsError(false);
             } else {
-                setMessage("Failed to save.");
+                const errData = await res.json().catch(() => ({}));
+                setMessage(`Failed to save: ${errData.error || errData.message || res.statusText}`);
+                setIsError(true);
             }
-        } catch (err) {
-            setMessage("Error saving.");
+        } catch (err: any) {
+            setMessage(`Error saving: ${err.message}`);
+            setIsError(true);
         }
         setSaving(false);
         setTimeout(() => setMessage(""), 4000);
@@ -87,7 +92,7 @@ export default function AdminDashboard() {
                 
                 <div className="flex items-center gap-4">
                     {message && (
-                        <span className="text-sm font-mono text-[var(--odia)]">{message}</span>
+                        <span className={`text-sm font-mono ${isError ? "text-red-400" : "text-[var(--odia)]"}`}>{message}</span>
                     )}
                     <button 
                         onClick={handleSave} 
@@ -208,8 +213,8 @@ function ProjectList({
                                     <label className="block text-xs font-mono text-[var(--muted)] mb-1">Video URL (Autoplays)</label>
                                     <input 
                                         type="text" 
-                                        value={(p as any).video_url || ""} 
-                                        onChange={(e) => onUpdate(category, i, "video_url" as any, e.target.value)}
+                                        value={p.video_url || ""} 
+                                        onChange={(e) => onUpdate(category, i, "video_url", e.target.value)}
                                         className="w-full bg-[rgba(255,255,255,0.03)] border border-[var(--border)] rounded p-2 text-sm focus:border-[var(--accent)] outline-none"
                                         placeholder="/assets/videos/preview.mp4"
                                     />

@@ -23,8 +23,8 @@ export async function POST(request: Request) {
         fs.writeFileSync(dataFilePath, JSON.stringify(body, null, 2), 'utf-8');
         
         return NextResponse.json({ success: true, message: 'Projects updated successfully' });
-    } catch (error) {
+    } catch (error: any) {
         console.error('Error saving projects:', error);
-        return NextResponse.json({ success: false, message: 'Failed to update projects' }, { status: 500 });
+        return NextResponse.json({ success: false, message: 'Failed to update projects', error: error.message }, { status: 500 });
     }
 }

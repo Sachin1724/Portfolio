@@ -99,23 +99,29 @@ function MediaCard({ project, index }: { project: Project; index: number }) {
                 (e.currentTarget as HTMLElement).style.transform = "";
             }}
         >
-            {/* Thumbnail area — natural height (Pinterest style) */}
+            {/* Thumbnail area — natural height (Pinterest style: width=100%, height=auto) */}
             <div className="relative overflow-hidden bg-[#0a0a0f]" style={{ borderRadius: "var(--radius-card) var(--radius-card) 0 0" }}>
                 {thumb ? (
+                    // w-full h-auto: image renders at its NATURAL aspect ratio (9:16, 1:1, 16:9 — whatever it is)
+                    // The scale transform is on the img itself; overflow-hidden on parent clips it cleanly
                     <img
                         src={thumb}
                         alt={project.title}
-                        className="w-full block object-cover transition-transform duration-700"
-                        style={{ transform: hovering ? "scale(1.05)" : "scale(1)" }}
+                        className="w-full h-auto block"
+                        style={{
+                            display: "block",
+                            transform: hovering ? "scale(1.04)" : "scale(1)",
+                            transition: "transform 0.6s cubic-bezier(0.22,1,0.36,1)",
+                            transformOrigin: "center center",
+                        }}
                         loading="lazy"
                         onError={() => setThumb(null)}
                     />
                 ) : (
-                    // Skeleton while loading
+                    // Skeleton: min-height so card isn't invisible while fetching
                     <div
-                        className="w-full"
                         style={{
-                            aspectRatio: "16/9",
+                            minHeight: 180,
                             background: "linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 100%)",
                             display: "flex",
                             alignItems: "center",
@@ -124,9 +130,9 @@ function MediaCard({ project, index }: { project: Project; index: number }) {
                     >
                         <div
                             style={{
-                                width: 40,
-                                height: 40,
-                                border: "2px solid rgba(249,115,22,0.3)",
+                                width: 32,
+                                height: 32,
+                                border: "2px solid rgba(249,115,22,0.25)",
                                 borderRadius: "50%",
                                 borderTopColor: "var(--accent)",
                                 animation: "spin 1s linear infinite",

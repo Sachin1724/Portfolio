@@ -321,7 +321,9 @@ function MasonryGrid({ projects }: { projects: Project[] }) {
                 ))}
             </div>
         </>
+    );
 }
+
 
 // ─── Main Work section
 export default function Work() {

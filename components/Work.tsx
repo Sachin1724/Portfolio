@@ -52,6 +52,8 @@ function PlayIcon() {
 function MediaCard({ project, index }: { project: Project; index: number }) {
     const link = project.live_url ?? project.link ?? "#";
     const tags = (project.tags ?? []).slice(0, 2);
+    // aspect_ratio from admin controls the card box (e.g. "9/16", "16/9", "1/1", "4/5")
+    const aspectRatio = (project as any).aspect_ratio || "16/9";
 
     // Resolved thumbnail: manual image → auto-fetched from link
     const [thumb, setThumb] = useState<string | null>(project.image ?? null);
@@ -99,45 +101,34 @@ function MediaCard({ project, index }: { project: Project; index: number }) {
                 (e.currentTarget as HTMLElement).style.transform = "";
             }}
         >
-            {/* Thumbnail area — natural height (Pinterest style: width=100%, height=auto) */}
-            <div className="relative overflow-hidden bg-[#0a0a0f]" style={{ borderRadius: "var(--radius-card) var(--radius-card) 0 0" }}>
+            {/* Thumbnail — fixed aspect ratio box set by admin, filled with object-cover */}
+            <div
+                className="relative overflow-hidden bg-[#0a0a0f]"
+                style={{ aspectRatio, borderRadius: "var(--radius-card) var(--radius-card) 0 0" }}
+            >
                 {thumb ? (
-                    // w-full h-auto: image renders at its NATURAL aspect ratio (9:16, 1:1, 16:9 — whatever it is)
-                    // The scale transform is on the img itself; overflow-hidden on parent clips it cleanly
                     <img
                         src={thumb}
                         alt={project.title}
-                        className="w-full h-auto block"
+                        className="absolute inset-0 w-full h-full object-cover"
                         style={{
-                            display: "block",
                             transform: hovering ? "scale(1.04)" : "scale(1)",
                             transition: "transform 0.6s cubic-bezier(0.22,1,0.36,1)",
-                            transformOrigin: "center center",
                         }}
                         loading="lazy"
                         onError={() => setThumb(null)}
                     />
                 ) : (
-                    // Skeleton: min-height so card isn't invisible while fetching
-                    <div
-                        style={{
-                            minHeight: 180,
-                            background: "linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 100%)",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                        }}
+                    <div className="absolute inset-0 flex items-center justify-center"
+                        style={{ background: "linear-gradient(135deg,#0f0f1a,#1a1a2e)" }}
                     >
-                        <div
-                            style={{
-                                width: 32,
-                                height: 32,
-                                border: "2px solid rgba(249,115,22,0.25)",
-                                borderRadius: "50%",
-                                borderTopColor: "var(--accent)",
-                                animation: "spin 1s linear infinite",
-                            }}
-                        />
+                        <div style={{
+                            width: 28, height: 28,
+                            border: "2px solid rgba(249,115,22,0.25)",
+                            borderRadius: "50%",
+                            borderTopColor: "var(--accent)",
+                            animation: "spin 1s linear infinite",
+                        }} />
                     </div>
                 )}
 
@@ -295,37 +286,41 @@ function MasonryGrid({ projects }: { projects: Project[] }) {
     }
 
     return (
-        <div
-            style={{
-                columns: "1",
-                columnGap: "1.25rem",
-            }}
-            className="masonry-grid"
-        >
+        <>
             <style>{`
-                .masonry-grid { columns: 1; }
-                @media (min-width: 640px) { .masonry-grid { columns: 2; } }
-                @media (min-width: 1024px) { .masonry-grid { columns: 3; } }
+                /* Pinterest masonry: column-width keeps cards compact, more cols on wide screens */
+                .masonry-grid {
+                    columns: 1;
+                    column-gap: 1rem;
+                }
+                @media (min-width: 480px)  { .masonry-grid { columns: 2; } }
+                @media (min-width: 900px)  { .masonry-grid { columns: 3; } }
+                @media (min-width: 1280px) { .masonry-grid { columns: 4; } }
+                .masonry-item {
+                    break-inside: avoid;
+                    margin-bottom: 1rem;
+                }
                 @keyframes spin { to { transform: rotate(360deg); } }
                 @keyframes fadeUp {
-                    from { opacity: 0; transform: translateY(24px); }
+                    from { opacity: 0; transform: translateY(20px); }
                     to   { opacity: 1; transform: translateY(0); }
                 }
             `}</style>
-            {projects.map((project, i) => (
-                <div
-                    key={project.id}
-                    style={{
-                        breakInside: "avoid",
-                        opacity: 0,
-                        animation: `fadeUp 0.5s cubic-bezier(0.22,1,0.36,1) ${i * 70}ms forwards`,
-                    }}
-                >
-                    <MediaCard project={project} index={i} />
-                </div>
-            ))}
-        </div>
-    );
+            <div className="masonry-grid">
+                {projects.map((project, i) => (
+                    <div
+                        key={project.id}
+                        className="masonry-item"
+                        style={{
+                            opacity: 0,
+                            animation: `fadeUp 0.45s cubic-bezier(0.22,1,0.36,1) ${i * 60}ms forwards`,
+                        }}
+                    >
+                        <MediaCard project={project} index={i} />
+                    </div>
+                ))}
+            </div>
+        </>
 }
 
 // ─── Main Work section

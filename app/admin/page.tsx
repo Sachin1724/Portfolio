@@ -228,6 +228,57 @@ function ProjectList({
                                         className="w-full bg-[rgba(255,255,255,0.03)] border border-[var(--border)] rounded p-2 text-sm focus:border-[var(--accent)] outline-none"
                                     />
                                 </div>
+                                {category === "media" && (
+                                    <div>
+                                        <label className="block text-xs font-mono text-[var(--muted)] mb-1">
+                                            Card Aspect Ratio
+                                            <span className="ml-2 text-[var(--accent)] opacity-70">← controls card size</span>
+                                        </label>
+                                        <select
+                                            value={(p as any).aspect_ratio || "16/9"}
+                                            onChange={(e) => onUpdate(category, i, "aspect_ratio" as any, e.target.value)}
+                                            className="w-full bg-[rgba(255,255,255,0.03)] border border-[var(--border)] rounded p-2 text-sm focus:border-[var(--accent)] outline-none cursor-pointer"
+                                            style={{ color: "var(--text)" }}
+                                        >
+                                            <option value="16/9">📺  16:9 — Landscape (YouTube, events)</option>
+                                            <option value="9/16">📱  9:16 — Portrait Reel (Instagram Reels, TikTok)</option>
+                                            <option value="1/1">⬜  1:1 — Square (Instagram post)</option>
+                                            <option value="4/5">🖼️  4:5 — Portrait (Instagram portrait post)</option>
+                                        </select>
+                                        {/* Visual preview of selected ratio */}
+                                        <div className="flex gap-2 mt-2">
+                                            {[
+                                                { r: "16/9", w: 48, h: 27, label: "16:9" },
+                                                { r: "9/16", w: 18, h: 32, label: "9:16" },
+                                                { r: "1/1",  w: 28, h: 28, label: "1:1" },
+                                                { r: "4/5",  w: 24, h: 30, label: "4:5" },
+                                            ].map(({ r, w, h, label }) => (
+                                                <button
+                                                    key={r}
+                                                    type="button"
+                                                    onClick={() => onUpdate(category, i, "aspect_ratio" as any, r)}
+                                                    title={`Set to ${label}`}
+                                                    className="flex flex-col items-center gap-1 p-1.5 rounded transition-all"
+                                                    style={{
+                                                        border: `1px solid ${(p as any).aspect_ratio === r || (!((p as any).aspect_ratio) && r === "16/9") ? "var(--accent)" : "var(--border)"}`,
+                                                        background: (p as any).aspect_ratio === r || (!((p as any).aspect_ratio) && r === "16/9") ? "rgba(249,115,22,0.08)" : "transparent",
+                                                    }}
+                                                >
+                                                    <div
+                                                        style={{
+                                                            width: w / 2,
+                                                            height: h / 2,
+                                                            background: (p as any).aspect_ratio === r || (!((p as any).aspect_ratio) && r === "16/9") ? "var(--accent)" : "var(--muted)",
+                                                            borderRadius: 2,
+                                                            opacity: 0.7,
+                                                        }}
+                                                    />
+                                                    <span className="font-mono text-[0.5rem] text-[var(--muted)]">{label}</span>
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </div>

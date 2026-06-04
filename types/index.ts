@@ -10,6 +10,7 @@ export interface Project {
     live_url?: string;
     link?: string;
     video_url?: string;
+    aspect_ratio?: "16/9" | "9/16" | "1/1" | "4/5";  // Controls card display size
     category: "media" | "dev";
 }
 

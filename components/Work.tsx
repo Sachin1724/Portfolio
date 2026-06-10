@@ -1,14 +1,13 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Project } from "@/types";
 
 type Tab = "media" | "dev";
 
-// ─── Thumbnail cache (session-level, no re-fetching)
+// ─── Thumbnail cache (session-level)
 const thumbCache = new Map<string, string | null>();
 
-// ─── Auto-fetch thumbnail for a given URL
 async function fetchThumbnail(url: string): Promise<string | null> {
     if (!url) return null;
     if (thumbCache.has(url)) return thumbCache.get(url)!;
@@ -24,51 +23,36 @@ async function fetchThumbnail(url: string): Promise<string | null> {
     }
 }
 
-function ArrowIcon() {
-    return (
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-            <path d="M7 17L17 7M17 7H7M17 7V17" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-        </svg>
-    );
-}
+// ─── Icons
 function GithubIcon() {
     return (
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
         </svg>
     );
 }
 
-function PlayIcon() {
+function ExternalIcon() {
     return (
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="white">
-            <circle cx="12" cy="12" r="11" fill="rgba(0,0,0,0.55)" />
-            <path d="M9.5 7.5l8 4.5-8 4.5V7.5z" fill="white" />
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
+            <path d="M7 17L17 7M17 7H7M17 7V17" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
     );
 }
 
-// ─── Single card — self-contained thumbnail resolution
+// ─── Media Card — masonry-friendly, variable aspect ratio
 function MediaCard({ project, index }: { project: Project; index: number }) {
     const link = project.live_url ?? project.link ?? "#";
     const tags = (project.tags ?? []).slice(0, 2);
-    // aspect_ratio from admin controls the card box (e.g. "9/16", "16/9", "1/1", "4/5")
     const aspectRatio = (project as any).aspect_ratio || "16/9";
-
-    // Resolved thumbnail: manual image → auto-fetched from link
     const [thumb, setThumb] = useState<string | null>(project.image ?? null);
     const [hovering, setHovering] = useState(false);
 
     useEffect(() => {
-        if (project.image) {
-            setThumb(project.image);
-            return;
-        }
+        if (project.image) { setThumb(project.image); return; }
         if (!link || link === "#") return;
         let cancelled = false;
-        fetchThumbnail(link).then((t) => {
-            if (!cancelled) setThumb(t);
-        });
+        fetchThumbnail(link).then((t) => { if (!cancelled) setThumb(t); });
         return () => { cancelled = true; };
     }, [project.image, link]);
 
@@ -77,128 +61,78 @@ function MediaCard({ project, index }: { project: Project; index: number }) {
             href={link}
             target="_blank"
             rel="noopener noreferrer"
-            className="block group relative overflow-hidden cursor-pointer"
-            style={{
-                background: "var(--surface)",
-                border: "1px solid var(--glass-border)",
-                borderRadius: "var(--radius-card)",
-                backdropFilter: "blur(12px)",
-                transition: "border-color 0.35s ease, box-shadow 0.35s ease, transform 0.35s cubic-bezier(0.22,1,0.36,1)",
-                animationDelay: `${index * 60}ms`,
-                breakInside: "avoid",
-                marginBottom: "1.25rem",
-            }}
-            onMouseEnter={(e) => {
-                setHovering(true);
-                (e.currentTarget as HTMLElement).style.borderColor = "rgba(249,115,22,0.45)";
-                (e.currentTarget as HTMLElement).style.boxShadow = "0 20px 60px rgba(0,0,0,0.55), 0 0 24px rgba(249,115,22,0.1)";
-                (e.currentTarget as HTMLElement).style.transform = "translateY(-4px) scale(1.015)";
-            }}
-            onMouseLeave={(e) => {
-                setHovering(false);
-                (e.currentTarget as HTMLElement).style.borderColor = "var(--glass-border)";
-                (e.currentTarget as HTMLElement).style.boxShadow = "";
-                (e.currentTarget as HTMLElement).style.transform = "";
-            }}
+            className="block group relative overflow-hidden work-card"
+            onMouseEnter={() => setHovering(true)}
+            onMouseLeave={() => setHovering(false)}
+            style={{ animationDelay: `${index * 70}ms` }}
         >
-            {/* Thumbnail — fixed aspect ratio box set by admin, filled with object-cover */}
-            <div
-                className="relative overflow-hidden bg-[#0a0a0f]"
-                style={{ aspectRatio, borderRadius: "var(--radius-card) var(--radius-card) 0 0" }}
-            >
+            {/* Thumbnail */}
+            <div className="relative overflow-hidden bg-[#08080f]" style={{ aspectRatio }}>
                 {thumb ? (
                     <img
                         src={thumb}
                         alt={project.title}
                         className="absolute inset-0 w-full h-full object-cover"
                         style={{
-                            transform: hovering ? "scale(1.04)" : "scale(1)",
-                            transition: "transform 0.6s cubic-bezier(0.22,1,0.36,1)",
+                            transform: hovering ? "scale(1.07)" : "scale(1)",
+                            transition: "transform 0.7s cubic-bezier(0.22,1,0.36,1)",
                         }}
                         loading="lazy"
                         onError={() => setThumb(null)}
                     />
                 ) : (
-                    <div className="absolute inset-0 flex items-center justify-center"
-                        style={{ background: "linear-gradient(135deg,#0f0f1a,#1a1a2e)" }}
-                    >
-                        <div style={{
-                            width: 28, height: 28,
-                            border: "2px solid rgba(249,115,22,0.25)",
-                            borderRadius: "50%",
-                            borderTopColor: "var(--accent)",
-                            animation: "spin 1s linear infinite",
-                        }} />
+                    <div className="absolute inset-0 flex items-center justify-center" style={{ background: "linear-gradient(135deg,#0c0c1a,#1a1020)" }}>
+                        <div className="work-spinner" />
                     </div>
                 )}
-
                 {/* Gradient overlay */}
                 <div
-                    className="absolute inset-0 pointer-events-none transition-opacity duration-300"
+                    className="absolute inset-0 pointer-events-none"
                     style={{
-                        background: "linear-gradient(to top, rgba(10,10,15,0.8) 0%, rgba(10,10,15,0.1) 50%, transparent 100%)",
-                        opacity: hovering ? 1 : 0.3,
+                        background: "linear-gradient(to top, rgba(5,5,10,0.9) 0%, rgba(5,5,10,0.2) 50%, transparent 100%)",
+                        opacity: hovering ? 1 : 0.35,
+                        transition: "opacity 0.4s ease",
                     }}
                 />
-
-                {/* Play button on hover */}
-                <div
-                    className="absolute inset-0 flex items-center justify-center pointer-events-none transition-all duration-300"
-                    style={{ opacity: hovering ? 1 : 0, transform: hovering ? "scale(1)" : "scale(0.8)" }}
-                >
-                    <PlayIcon />
-                </div>
-
                 {/* Tags */}
                 {tags.length > 0 && (
                     <div className="absolute top-3 left-3 flex gap-1.5">
                         {tags.map((tag) => (
-                            <span
-                                key={tag}
-                                className="font-mono text-[0.52rem] uppercase tracking-[0.12em] px-2 py-0.5"
-                                style={{
-                                    background: "rgba(10,10,15,0.75)",
-                                    border: "1px solid rgba(249,115,22,0.4)",
-                                    color: "var(--accent)",
-                                    backdropFilter: "blur(8px)",
-                                    borderRadius: "var(--radius-sm)",
-                                }}
-                            >
-                                {tag}
-                            </span>
+                            <span key={tag} className="work-tag">{tag}</span>
                         ))}
                     </div>
                 )}
-            </div>
-
-            {/* Info strip */}
-            <div className="flex items-center justify-between px-4 py-3 border-t border-[var(--glass-border)]">
-                <div className="truncate pr-2">
-                    <div
-                        className="font-syne font-extrabold text-[var(--text)] transition-colors duration-200 group-hover:text-[var(--accent)] truncate"
-                        style={{ fontSize: "0.88rem" }}
-                    >
-                        {project.title}
-                    </div>
-                    <div className="font-mono text-[0.57rem] text-[var(--muted)] uppercase tracking-[0.1em] mt-0.5">
-                        Media / Film
+                {/* Watch CTA on hover */}
+                <div
+                    className="absolute inset-0 flex items-end justify-end p-4 pointer-events-none"
+                    style={{ opacity: hovering ? 1 : 0, transition: "opacity 0.3s ease" }}
+                >
+                    <div className="flex items-center gap-2 font-mono text-[0.6rem] uppercase tracking-[0.15em] text-white">
+                        <span style={{ color: "var(--accent)" }}>↗</span> Watch
                     </div>
                 </div>
-                <div
-                    className="flex items-center gap-1.5 font-mono text-[0.6rem] uppercase tracking-[0.1em] shrink-0 transition-all duration-200 group-hover:gap-2.5"
-                    style={{ color: "var(--accent)", textShadow: "0 0 10px rgba(249,115,22,0.4)" }}
-                >
-                    ↗ Watch
+            </div>
+
+            {/* Info */}
+            <div className="work-card-info">
+                <div className="min-w-0">
+                    <div className="work-card-title group-hover:text-[var(--accent)] transition-colors duration-200">
+                        {project.title}
+                    </div>
+                    <div className="work-card-sub">Film &amp; Motion</div>
+                </div>
+                <div className="work-card-action" style={{ opacity: hovering ? 1 : 0.4, transition: "opacity 0.3s ease" }}>
+                    <ExternalIcon />
                 </div>
             </div>
         </a>
     );
 }
 
-// ─── Dev project card (fixed 16/9 ratio, unchanged)
+// ─── Dev Card
 function DevCard({ project, index }: { project: Project; index: number }) {
     const link = project.live_url ?? project.github_url ?? project.link ?? "#";
-    const tags = (project.tech_stack ?? project.tags ?? []).slice(0, 3);
+    const tags = (project.tech_stack ?? project.tags ?? []).slice(0, 4);
     const [hovering, setHovering] = useState(false);
 
     return (
@@ -206,133 +140,137 @@ function DevCard({ project, index }: { project: Project; index: number }) {
             href={link}
             target="_blank"
             rel="noopener noreferrer"
-            className="block group relative overflow-hidden cursor-pointer fade-in"
-            style={{
-                background: "linear-gradient(180deg, var(--glass-bg), var(--glass-bg-subtle))",
-                border: "1px solid var(--glass-border)",
-                borderRadius: "var(--radius-card)",
-                backdropFilter: "blur(12px)",
-                transition: "border-color 0.35s ease, box-shadow 0.35s ease, transform 0.35s cubic-bezier(0.22,1,0.36,1)",
-                animationDelay: `${index * 80}ms`,
-            }}
-            onMouseEnter={(e) => {
-                setHovering(true);
-                (e.currentTarget as HTMLElement).style.borderColor = "rgba(249,115,22,0.35)";
-                (e.currentTarget as HTMLElement).style.boxShadow = "0 24px 64px rgba(0,0,0,0.5), 0 0 30px rgba(249,115,22,0.08)";
-                (e.currentTarget as HTMLElement).style.transform = "translateY(-6px)";
-            }}
-            onMouseLeave={(e) => {
-                setHovering(false);
-                (e.currentTarget as HTMLElement).style.borderColor = "var(--glass-border)";
-                (e.currentTarget as HTMLElement).style.boxShadow = "";
-                (e.currentTarget as HTMLElement).style.transform = "";
-            }}
+            className="block group relative overflow-hidden work-card"
+            onMouseEnter={() => setHovering(true)}
+            onMouseLeave={() => setHovering(false)}
+            style={{ animationDelay: `${index * 90}ms` }}
         >
-            <div className="relative overflow-hidden bg-[#0a0a0f]" style={{ aspectRatio: "16/9", borderRadius: "var(--radius-card) var(--radius-card) 0 0" }}>
+            <div className="relative overflow-hidden bg-[#08080f]" style={{ aspectRatio: "16/9" }}>
                 {project.image ? (
                     <img
                         src={project.image}
                         alt={project.title}
-                        className="w-full h-full object-cover transition-transform duration-700"
-                        style={{ transform: hovering ? "scale(1.06)" : "scale(1)" }}
+                        className="w-full h-full object-cover"
+                        style={{
+                            transform: hovering ? "scale(1.06)" : "scale(1)",
+                            transition: "transform 0.7s cubic-bezier(0.22,1,0.36,1)",
+                        }}
                         loading="lazy"
                     />
                 ) : (
-                    <div className="w-full h-full flex items-center justify-center" style={{ background: "linear-gradient(135deg,#0f0f1a,#1a1a2e)" }}>
-                        <span className="text-4xl opacity-20">{"</>"}</span>
+                    <div className="w-full h-full flex items-center justify-center" style={{ background: "linear-gradient(135deg,#0c0c1a,#0f1a1a)" }}>
+                        <span className="font-mono text-5xl font-bold" style={{ color: "rgba(249,115,22,0.12)", letterSpacing: "-0.05em" }}>{"</>"}</span>
                     </div>
                 )}
                 <div
-                    className="absolute inset-0 transition-opacity duration-300"
-                    style={{ background: "linear-gradient(to top, rgba(10,10,15,0.85) 0%, rgba(10,10,15,0.2) 40%, transparent 100%)", opacity: hovering ? 1 : 0.4 }}
+                    className="absolute inset-0"
+                    style={{
+                        background: "linear-gradient(to top, rgba(5,5,10,0.92) 0%, rgba(5,5,10,0.15) 50%, transparent 100%)",
+                        opacity: hovering ? 1 : 0.4,
+                        transition: "opacity 0.4s ease",
+                    }}
                 />
-                <div className="absolute top-4 left-4 flex gap-2 flex-wrap">
+                {/* Tech tags */}
+                <div className="absolute top-3 left-3 flex gap-1.5 flex-wrap">
                     {tags.map((tag) => (
-                        <span key={tag} className="font-mono text-[0.55rem] uppercase tracking-[0.12em] px-2.5 py-1"
-                            style={{ background: "rgba(10,10,15,0.7)", border: "1px solid rgba(249,115,22,0.35)", color: "var(--accent)", backdropFilter: "blur(8px)", borderRadius: "var(--radius-sm)" }}>
-                            {tag}
-                        </span>
+                        <span key={tag} className="work-tag">{tag}</span>
                     ))}
                 </div>
             </div>
-            <div className="flex items-center justify-between px-5 py-4 border-t border-[var(--glass-border)]">
-                <div>
-                    <div className="font-syne font-extrabold text-[var(--text)] transition-colors duration-200 group-hover:text-[var(--accent)]" style={{ fontSize: "0.95rem" }}>
+
+            <div className="work-card-info">
+                <div className="min-w-0">
+                    <div className="work-card-title group-hover:text-[var(--accent)] transition-colors duration-200">
                         {project.title}
                     </div>
-                    <div className="font-mono text-[0.6rem] text-[var(--muted)] uppercase tracking-[0.1em] mt-0.5">
-                        Dev Project
-                    </div>
+                    <div className="work-card-sub">Digital Product</div>
                 </div>
-                <div className="flex items-center gap-2 font-mono text-[0.62rem] uppercase tracking-[0.1em] transition-all duration-200 group-hover:gap-3" style={{ color: "var(--accent)" }}>
+                <div className="flex items-center gap-2.5" style={{ opacity: hovering ? 1 : 0.4, transition: "opacity 0.3s ease" }}>
                     {project.github_url && (
-                        <span className="text-[var(--muted)] hover:text-[var(--odia)] transition-colors"><GithubIcon /></span>
+                        <span className="text-[var(--muted)] hover:text-[var(--text)] transition-colors">
+                            <GithubIcon />
+                        </span>
                     )}
-                    <span style={{ textShadow: "0 0 10px rgba(249,115,22,0.5)" }}>↗ View</span>
+                    <span style={{ color: "var(--accent)" }}><ExternalIcon /></span>
                 </div>
             </div>
         </a>
     );
 }
 
-// ─── Pinterest masonry columns — pure CSS columns approach
+// ─── Masonry for media
 function MasonryGrid({ projects }: { projects: Project[] }) {
     if (projects.length === 0) {
-        return (
-            <div className="text-center py-20 text-[var(--muted)] font-mono text-sm">
-                No projects yet — add some in the Admin Panel!
-            </div>
-        );
+        return <EmptyState label="No media projects yet." />;
     }
-
     return (
-        <>
-            <style>{`
-                /* Pinterest masonry: column-width keeps cards compact, more cols on wide screens */
-                .masonry-grid {
-                    columns: 1;
-                    column-gap: 1rem;
-                }
-                @media (min-width: 480px)  { .masonry-grid { columns: 2; } }
-                @media (min-width: 900px)  { .masonry-grid { columns: 3; } }
-                @media (min-width: 1280px) { .masonry-grid { columns: 4; } }
-                .masonry-item {
-                    break-inside: avoid;
-                    margin-bottom: 1rem;
-                }
-                @keyframes spin { to { transform: rotate(360deg); } }
-                @keyframes fadeUp {
-                    from { opacity: 0; transform: translateY(20px); }
-                    to   { opacity: 1; transform: translateY(0); }
-                }
-            `}</style>
-            <div className="masonry-grid">
-                {projects.map((project, i) => (
-                    <div
-                        key={project.id}
-                        className="masonry-item"
-                        style={{
-                            opacity: 0,
-                            animation: `fadeUp 0.45s cubic-bezier(0.22,1,0.36,1) ${i * 60}ms forwards`,
-                        }}
-                    >
-                        <MediaCard project={project} index={i} />
-                    </div>
-                ))}
-            </div>
-        </>
+        <div className="masonry-work">
+            {projects.map((p, i) => (
+                <div key={p.id} className="masonry-work-item work-reveal" style={{ animationDelay: `${i * 70}ms` }}>
+                    <MediaCard project={p} index={i} />
+                </div>
+            ))}
+        </div>
     );
 }
 
+// ─── Regular grid for dev
+function DevGrid({ projects }: { projects: Project[] }) {
+    if (projects.length === 0) {
+        return <EmptyState label="Dev projects coming soon." />;
+    }
+    return (
+        <div className="dev-grid-work">
+            {projects.map((p, i) => (
+                <div key={p.id} className="work-reveal" style={{ animationDelay: `${i * 90}ms` }}>
+                    <DevCard project={p} index={i} />
+                </div>
+            ))}
+        </div>
+    );
+}
 
-// ─── Main Work section
+function EmptyState({ label }: { label: string }) {
+    return (
+        <div className="flex flex-col items-center justify-center py-28 gap-4">
+            <div style={{ width: 48, height: 48, border: "1px solid var(--border)", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <span style={{ color: "var(--muted)", fontSize: "1.2rem" }}>✦</span>
+            </div>
+            <p className="font-mono text-xs uppercase tracking-[0.18em]" style={{ color: "var(--muted)" }}>{label}</p>
+        </div>
+    );
+}
+
+// ─── Skeleton loader
+function SkeletonGrid() {
+    return (
+        <div className="dev-grid-work">
+            {[1, 2, 3].map((n) => (
+                <div key={n} className="work-card skeleton-card">
+                    <div style={{ aspectRatio: "16/9", background: "linear-gradient(135deg,#0f0f1a,#1a1a2e)", animation: "skeletonPulse 1.6s ease infinite" }} />
+                    <div className="work-card-info">
+                        <div className="space-y-2">
+                            <div style={{ height: 13, width: "55%", borderRadius: 4, background: "#1a1a2e", animation: "skeletonPulse 1.6s ease infinite 0.2s" }} />
+                            <div style={{ height: 9, width: "35%", borderRadius: 4, background: "#111122", animation: "skeletonPulse 1.6s ease infinite 0.4s" }} />
+                        </div>
+                    </div>
+                </div>
+            ))}
+        </div>
+    );
+}
+
+// ─── THE MAIN SECTION
 export default function Work() {
     const [activeTab, setActiveTab] = useState<Tab>("media");
     const [mediaProjects, setMediaProjects] = useState<Project[]>([]);
     const [devProjects, setDevProjects] = useState<Project[]>([]);
     const [loading, setLoading] = useState(true);
+    const [sliderStyle, setSliderStyle] = useState({ left: "0%", width: "50%" });
+    const tabBarRef = useRef<HTMLDivElement>(null);
+    const mediaBtnRef = useRef<HTMLButtonElement>(null);
+    const devBtnRef = useRef<HTMLButtonElement>(null);
 
-    // Fetch live data from API (not build-time constants — so admin changes show instantly)
     useEffect(() => {
         fetch("/api/projects")
             .then((r) => r.json())
@@ -344,85 +282,448 @@ export default function Work() {
             .catch(() => setLoading(false));
     }, []);
 
+    // Animate slider pill position
+    useEffect(() => {
+        const bar = tabBarRef.current;
+        const btn = activeTab === "media" ? mediaBtnRef.current : devBtnRef.current;
+        if (!bar || !btn) return;
+        const barRect = bar.getBoundingClientRect();
+        const btnRect = btn.getBoundingClientRect();
+        const left = ((btnRect.left - barRect.left) / barRect.width) * 100;
+        const width = (btnRect.width / barRect.width) * 100;
+        setSliderStyle({ left: `${left}%`, width: `${width}%` });
+    }, [activeTab]);
+
     const projects = activeTab === "media" ? mediaProjects : devProjects;
+    const projectCount = projects.length;
 
     return (
-        <section
-            id="work"
-            style={{
-                padding: "var(--section-py) var(--container-px)",
-                maxWidth: "var(--container-max)",
-                margin: "0 auto",
-            }}
-            className="relative z-[1]"
-        >
-            {/* Section label */}
-            <div className="section-label fade-in">03 — Selected Work</div>
+        <section id="work" className="work-section">
+            <style>{`
+                /* ─── Work Section Styles ─── */
+                .work-section {
+                    padding: var(--section-py) 0;
+                    position: relative;
+                    overflow: hidden;
+                }
 
-            {/* Header row */}
-            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-10 fade-in">
-                <h2
-                    className="font-syne font-extrabold tracking-tight leading-tight"
-                    style={{ fontSize: "clamp(2rem, 5vw, 3.5rem)" }}
-                >
-                    Selected Work
-                </h2>
+                /* Ambient glow behind section */
+                .work-section::before {
+                    content: '';
+                    position: absolute;
+                    top: 20%;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    width: 800px;
+                    height: 400px;
+                    background: radial-gradient(ellipse, rgba(249,115,22,0.04) 0%, transparent 70%);
+                    pointer-events: none;
+                }
 
-                {/* Tab switcher */}
-                <div
-                    className="flex items-center gap-1 p-1 self-start sm:self-auto"
-                    style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "var(--radius-pill)" }}
-                    role="tablist"
-                >
-                    {(["media", "dev"] as Tab[]).map((tab) => (
+                .work-inner {
+                    max-width: var(--container-max);
+                    margin: 0 auto;
+                    padding-inline: var(--container-px);
+                }
+
+                /* ─── Divider line above */
+                .work-divider {
+                    width: 100%;
+                    height: 1px;
+                    background: linear-gradient(90deg, transparent, var(--border) 20%, var(--border) 80%, transparent);
+                    margin-bottom: 80px;
+                }
+
+                /* ─── Section meta row */
+                .work-meta {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    margin-bottom: 56px;
+                }
+
+                /* ─── Agency-style bold header */
+                .work-heading-row {
+                    margin-bottom: 0;
+                }
+
+                .work-eyebrow {
+                    font-family: 'Space Mono', monospace;
+                    font-size: 0.62rem;
+                    color: var(--accent);
+                    letter-spacing: 0.28em;
+                    text-transform: uppercase;
+                    margin-bottom: 12px;
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                }
+                .work-eyebrow::before {
+                    content: '';
+                    display: block;
+                    width: 28px;
+                    height: 1px;
+                    background: var(--accent);
+                    opacity: 0.6;
+                }
+
+                .work-count {
+                    font-family: 'Space Mono', monospace;
+                    font-size: 0.58rem;
+                    color: var(--muted);
+                    letter-spacing: 0.12em;
+                    text-transform: uppercase;
+                    display: flex;
+                    align-items: center;
+                    gap: 6px;
+                }
+                .work-count-dot {
+                    width: 5px;
+                    height: 5px;
+                    border-radius: 50%;
+                    background: var(--accent);
+                    animation: glow-dot 2s ease infinite;
+                }
+
+                /* ─── THE SWITCHER — agency-grade */
+                .work-switcher-wrap {
+                    margin-bottom: 64px;
+                    border-bottom: 1px solid var(--border);
+                }
+
+                .work-switcher {
+                    display: flex;
+                    align-items: stretch;
+                    position: relative;
+                    /* animated sliding underline */
+                }
+
+                /* Animated underline indicator */
+                .work-switcher-indicator {
+                    position: absolute;
+                    bottom: -1px;
+                    height: 2px;
+                    background: var(--accent);
+                    transition: left 0.45s cubic-bezier(0.22,1,0.36,1), width 0.45s cubic-bezier(0.22,1,0.36,1);
+                    box-shadow: 0 0 16px rgba(249,115,22,0.7);
+                    border-radius: 1px;
+                }
+
+                .work-tab-btn {
+                    position: relative;
+                    display: flex;
+                    align-items: center;
+                    gap: 14px;
+                    padding: 28px 0 24px;
+                    margin-right: 56px;
+                    background: none;
+                    border: none;
+                    cursor: pointer;
+                    text-align: left;
+                    transition: all 0.3s ease;
+                    white-space: nowrap;
+                }
+                .work-tab-btn:last-child {
+                    margin-right: 0;
+                }
+
+                .work-tab-label {
+                    font-family: 'Syne', sans-serif;
+                    font-weight: 800;
+                    font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+                    letter-spacing: -0.03em;
+                    line-height: 1;
+                    transition: color 0.35s ease, opacity 0.35s ease;
+                }
+
+                .work-tab-btn[aria-selected="true"] .work-tab-label {
+                    color: var(--text);
+                    opacity: 1;
+                }
+                .work-tab-btn[aria-selected="false"] .work-tab-label {
+                    color: var(--muted);
+                    opacity: 0.45;
+                }
+                .work-tab-btn[aria-selected="false"]:hover .work-tab-label {
+                    opacity: 0.7;
+                    color: var(--text);
+                }
+
+                /* small badge showing count */
+                .work-tab-badge {
+                    font-family: 'Space Mono', monospace;
+                    font-size: 0.52rem;
+                    letter-spacing: 0.1em;
+                    text-transform: uppercase;
+                    padding: 4px 9px;
+                    border-radius: 999px;
+                    border: 1px solid;
+                    transition: all 0.35s ease;
+                    align-self: flex-start;
+                    margin-top: 4px;
+                }
+                .work-tab-btn[aria-selected="true"] .work-tab-badge {
+                    background: rgba(249,115,22,0.12);
+                    border-color: rgba(249,115,22,0.4);
+                    color: var(--accent);
+                }
+                .work-tab-btn[aria-selected="false"] .work-tab-badge {
+                    background: transparent;
+                    border-color: var(--border);
+                    color: var(--muted);
+                }
+
+                /* type descriptor under label */
+                .work-tab-desc {
+                    font-family: 'Space Mono', monospace;
+                    font-size: 0.55rem;
+                    letter-spacing: 0.14em;
+                    text-transform: uppercase;
+                    transition: color 0.35s ease, opacity 0.35s ease;
+                    margin-top: 4px;
+                }
+                .work-tab-btn[aria-selected="true"] .work-tab-desc {
+                    color: var(--accent);
+                    opacity: 0.8;
+                }
+                .work-tab-btn[aria-selected="false"] .work-tab-desc {
+                    color: var(--muted);
+                    opacity: 0.3;
+                }
+
+                /* ─── Grid layouts */
+                .masonry-work {
+                    columns: 1;
+                    column-gap: 1.25rem;
+                    width: 100%;
+                }
+                @media (min-width: 500px)  { .masonry-work { columns: 2; } }
+                @media (min-width: 900px)  { .masonry-work { columns: 3; } }
+                @media (min-width: 1300px) { .masonry-work { columns: 4; } }
+
+                .masonry-work-item {
+                    break-inside: avoid;
+                    margin-bottom: 1.25rem;
+                }
+
+                .dev-grid-work {
+                    display: grid;
+                    grid-template-columns: 1fr;
+                    gap: 1.25rem;
+                    width: 100%;
+                }
+                @media (min-width: 640px)  { .dev-grid-work { grid-template-columns: repeat(2, 1fr); } }
+                @media (min-width: 1024px) { .dev-grid-work { grid-template-columns: repeat(3, 1fr); } }
+
+                /* ─── Card shared styles */
+                .work-card {
+                    border-radius: var(--radius-card);
+                    overflow: hidden;
+                    border: 1px solid var(--glass-border);
+                    background: var(--surface);
+                    transition: border-color 0.4s ease, box-shadow 0.4s ease, transform 0.4s cubic-bezier(0.22,1,0.36,1);
+                }
+                .work-card:hover {
+                    border-color: rgba(249,115,22,0.3);
+                    box-shadow: 0 24px 64px rgba(0,0,0,0.55), 0 0 28px rgba(249,115,22,0.07);
+                    transform: translateY(-5px);
+                }
+
+                .work-card-info {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    padding: 14px 18px;
+                    border-top: 1px solid var(--glass-border);
+                    gap: 10px;
+                }
+
+                .work-card-title {
+                    font-family: 'Syne', sans-serif;
+                    font-weight: 800;
+                    font-size: 0.88rem;
+                    color: var(--text);
+                    line-height: 1.2;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+
+                .work-card-sub {
+                    font-family: 'Space Mono', monospace;
+                    font-size: 0.52rem;
+                    color: var(--muted);
+                    text-transform: uppercase;
+                    letter-spacing: 0.12em;
+                    margin-top: 3px;
+                }
+
+                .work-card-action {
+                    color: var(--accent);
+                    flex-shrink: 0;
+                }
+
+                .work-tag {
+                    font-family: 'Space Mono', monospace;
+                    font-size: 0.5rem;
+                    text-transform: uppercase;
+                    letter-spacing: 0.12em;
+                    padding: 3px 8px;
+                    background: rgba(5,5,10,0.75);
+                    border: 1px solid rgba(249,115,22,0.35);
+                    color: var(--accent);
+                    backdrop-filter: blur(8px);
+                    border-radius: 4px;
+                    white-space: nowrap;
+                }
+
+                /* ─── Reveal animation */
+                @keyframes workReveal {
+                    from { opacity: 0; transform: translateY(22px); }
+                    to   { opacity: 1; transform: translateY(0); }
+                }
+                .work-reveal {
+                    opacity: 0;
+                    animation: workReveal 0.55s cubic-bezier(0.22,1,0.36,1) forwards;
+                }
+
+                /* ─── Section header reveal */
+                @keyframes workFadeIn {
+                    from { opacity: 0; transform: translateY(14px); }
+                    to   { opacity: 1; transform: translateY(0); }
+                }
+                .work-header-reveal {
+                    opacity: 0;
+                    animation: workFadeIn 0.6s cubic-bezier(0.22,1,0.36,1) forwards;
+                }
+
+                /* ─── Tab content transition */
+                .work-content {
+                    opacity: 0;
+                    animation: workReveal 0.4s cubic-bezier(0.22,1,0.36,1) forwards;
+                }
+
+                /* ─── Spinner */
+                @keyframes spin { to { transform: rotate(360deg); } }
+                .work-spinner {
+                    width: 26px;
+                    height: 26px;
+                    border: 2px solid rgba(249,115,22,0.18);
+                    border-top-color: var(--accent);
+                    border-radius: 50%;
+                    animation: spin 0.9s linear infinite;
+                }
+
+                /* ─── Skeleton pulse */
+                @keyframes skeletonPulse {
+                    0%, 100% { opacity: 0.5; }
+                    50%       { opacity: 0.25; }
+                }
+
+                /* ─── Live dot */
+                @keyframes glow-dot {
+                    0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(249,115,22,0.5); }
+                    50%       { opacity: 0.7; box-shadow: 0 0 0 4px rgba(249,115,22,0); }
+                }
+            `}</style>
+
+            <div className="work-inner">
+                {/* Divider line */}
+                <div className="work-divider work-header-reveal" style={{ animationDelay: "0ms" }} />
+
+                {/* Meta row */}
+                <div className="work-meta work-header-reveal" style={{ animationDelay: "80ms" }}>
+                    <div className="work-eyebrow">03 — Selected Work</div>
+                    <div className="work-count">
+                        <span className="work-count-dot" />
+                        {loading ? "—" : projectCount} {activeTab === "media" ? "Films" : "Projects"}
+                    </div>
+                </div>
+
+                {/* ── THE SWITCHER ── */}
+                <div className="work-switcher-wrap work-header-reveal" style={{ animationDelay: "160ms" }}>
+                    <div className="work-switcher" ref={tabBarRef} role="tablist">
+                        {/* Animated underline */}
+                        <div
+                            className="work-switcher-indicator"
+                            style={{ left: sliderStyle.left, width: sliderStyle.width }}
+                        />
+
+                        {/* Media Tab */}
                         <button
-                            key={tab}
+                            ref={mediaBtnRef}
                             role="tab"
-                            aria-selected={activeTab === tab}
-                            onClick={() => setActiveTab(tab)}
-                            className="font-mono text-[0.62rem] uppercase tracking-[0.12em] px-5 py-2 transition-all duration-200"
+                            aria-selected={activeTab === "media"}
+                            onClick={() => setActiveTab("media")}
+                            className="work-tab-btn"
+                        >
+                            <div>
+                                <div className="work-tab-label">Film &amp; Motion</div>
+                                <div className="work-tab-desc">Video · Animation · Direction</div>
+                            </div>
+                            <span className="work-tab-badge">
+                                {loading ? "—" : mediaProjects.length}
+                            </span>
+                        </button>
+
+                        {/* Dev Tab */}
+                        <button
+                            ref={devBtnRef}
+                            role="tab"
+                            aria-selected={activeTab === "dev"}
+                            onClick={() => setActiveTab("dev")}
+                            className="work-tab-btn"
+                        >
+                            <div>
+                                <div className="work-tab-label">Digital &amp; Dev</div>
+                                <div className="work-tab-desc">Web · Apps · Engineering</div>
+                            </div>
+                            <span className="work-tab-badge">
+                                {loading ? "—" : devProjects.length}
+                            </span>
+                        </button>
+                    </div>
+                </div>
+
+                {/* ── CONTENT ── */}
+                <div key={activeTab} className="work-content">
+                    {loading ? (
+                        <SkeletonGrid />
+                    ) : activeTab === "media" ? (
+                        <MasonryGrid projects={mediaProjects} />
+                    ) : (
+                        <DevGrid projects={devProjects} />
+                    )}
+                </div>
+
+                {/* Bottom CTA */}
+                {!loading && projectCount > 0 && (
+                    <div className="flex justify-center mt-16 work-header-reveal" style={{ animationDelay: "300ms" }}>
+                        <a
+                            href="#contact"
+                            className="group inline-flex items-center gap-3 font-mono text-[0.62rem] uppercase tracking-[0.18em] px-8 py-4"
                             style={{
-                                background: activeTab === tab ? "var(--accent)" : "transparent",
-                                color: activeTab === tab ? "#000" : "var(--muted)",
-                                fontWeight: activeTab === tab ? 700 : 400,
-                                borderRadius: "var(--radius-sm)",
+                                border: "1px solid var(--border)",
+                                borderRadius: "var(--radius-pill)",
+                                color: "var(--muted)",
+                                transition: "all 0.35s ease",
+                                textDecoration: "none",
+                            }}
+                            onMouseEnter={(e) => {
+                                (e.currentTarget as HTMLElement).style.borderColor = "rgba(249,115,22,0.5)";
+                                (e.currentTarget as HTMLElement).style.color = "var(--accent)";
+                                (e.currentTarget as HTMLElement).style.boxShadow = "0 0 24px rgba(249,115,22,0.12)";
+                            }}
+                            onMouseLeave={(e) => {
+                                (e.currentTarget as HTMLElement).style.borderColor = "var(--border)";
+                                (e.currentTarget as HTMLElement).style.color = "var(--muted)";
+                                (e.currentTarget as HTMLElement).style.boxShadow = "";
                             }}
                         >
-                            {tab === "media" ? "Media" : "</> Dev"}
-                        </button>
-                    ))}
-                </div>
-            </div>
-
-            {/* Content */}
-            <div key={activeTab} style={{ animation: "fadeUp 0.4s cubic-bezier(0.22,1,0.36,1) forwards" }}>
-                {loading ? (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {[1, 2, 3].map((n) => (
-                            <div key={n} className="rounded-[var(--radius-card)] overflow-hidden" style={{ background: "var(--surface)", border: "1px solid var(--glass-border)" }}>
-                                <div style={{ aspectRatio: "16/9", background: "linear-gradient(135deg,#0f0f1a,#1a1a2e)", animation: "pulse 1.5s ease infinite" }} />
-                                <div className="p-4 space-y-2">
-                                    <div style={{ height: 14, width: "60%", borderRadius: 4, background: "#1a1a2e" }} />
-                                    <div style={{ height: 10, width: "40%", borderRadius: 4, background: "#0f0f1a" }} />
-                                </div>
-                            </div>
-                        ))}
+                            <span>Start a project</span>
+                            <span style={{ color: "var(--accent)" }}>→</span>
+                        </a>
                     </div>
-                ) : activeTab === "media" ? (
-                    <MasonryGrid projects={projects} />
-                ) : (
-                    // Dev tab — regular grid
-                    projects.length === 0 ? (
-                        <div className="text-center py-20 text-[var(--muted)] font-mono text-sm">
-                            More projects coming soon...
-                        </div>
-                    ) : (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {projects.map((project, i) => (
-                                <DevCard key={project.id} project={project} index={i} />
-                            ))}
-                        </div>
-                    )
                 )}
             </div>
         </section>

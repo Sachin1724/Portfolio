@@ -34,3 +34,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# local CMS data — do not overwrite with git (admin writes here locally)
+# data/projects.json is the local fallback when Redis is not configured
+# Uncomment the line below if you want to protect local admin saves from git resets:
+# data/projects.json

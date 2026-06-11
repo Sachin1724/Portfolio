@@ -14,7 +14,7 @@ export default function AdminDashboard() {
     const [isError, setIsError] = useState(false);
 
     useEffect(() => {
-        fetch("/api/projects")
+        fetch("/api/projects", { cache: "no-store" })
             .then((res) => res.json())
             .then((data) => {
                 setMediaProjects(data.MEDIA_PROJECTS || []);
@@ -200,14 +200,46 @@ function ProjectList({
                             </div>
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-xs font-mono text-[var(--muted)] mb-1">Image URL (Thumbnail)</label>
-                                    <input 
-                                        type="text" 
-                                        value={p.image || ""} 
-                                        onChange={(e) => onUpdate(category, i, "image", e.target.value)}
-                                        className="w-full bg-[rgba(255,255,255,0.03)] border border-[var(--border)] rounded p-2 text-sm focus:border-[var(--accent)] outline-none"
-                                        placeholder="/assets/images/thumb.jpg"
-                                    />
+                                    <label className="block text-xs font-mono text-[var(--muted)] mb-1">Image / Thumbnail</label>
+                                    <div className="flex gap-2 items-start">
+                                        <div className="flex-1">
+                                            <input 
+                                                type="text" 
+                                                value={p.image || ""} 
+                                                onChange={(e) => onUpdate(category, i, "image", e.target.value)}
+                                                className="w-full bg-[rgba(255,255,255,0.03)] border border-[var(--border)] rounded p-2 text-sm focus:border-[var(--accent)] outline-none"
+                                                placeholder="/assets/images/thumb.jpg"
+                                            />
+                                        </div>
+                                        <label className="cursor-pointer flex-shrink-0">
+                                            <span className="flex items-center gap-1 font-mono text-xs bg-[rgba(255,255,255,0.07)] border border-[var(--border)] px-3 py-2 rounded hover:bg-[rgba(255,255,255,0.12)] transition-colors whitespace-nowrap">
+                                                📁 Upload
+                                            </span>
+                                            <input
+                                                type="file"
+                                                accept="image/*"
+                                                className="hidden"
+                                                onChange={async (e) => {
+                                                    const file = e.target.files?.[0];
+                                                    if (!file) return;
+                                                    const fd = new FormData();
+                                                    fd.append('file', file);
+                                                    try {
+                                                        const res = await fetch('/api/upload', { method: 'POST', body: fd });
+                                                        const data = await res.json();
+                                                        if (data.path) onUpdate(category, i, "image", data.path);
+                                                        else alert('Upload failed: ' + (data.error || 'unknown'));
+                                                    } catch {
+                                                        alert('Upload failed');
+                                                    }
+                                                    e.target.value = '';
+                                                }}
+                                            />
+                                        </label>
+                                        {p.image && p.image.trim() && (
+                                            <img src={p.image} alt="thumb" className="w-12 h-12 object-cover rounded border border-[var(--border)] flex-shrink-0" onError={(e) => (e.currentTarget.style.display = 'none')} />
+                                        )}
+                                    </div>
                                 </div>
                                 <div>
                                     <label className="block text-xs font-mono text-[var(--muted)] mb-1">Video URL (Autoplays)</label>

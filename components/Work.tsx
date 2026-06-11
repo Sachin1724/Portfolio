@@ -49,7 +49,7 @@ function MediaCard({ project, index }: { project: Project; index: number }) {
     const [hovering, setHovering] = useState(false);
 
     useEffect(() => {
-        if (project.image) { setThumb(project.image); return; }
+        if (project.image && project.image.trim()) { setThumb(project.image.trim()); return; }
         if (!link || link === "#") return;
         let cancelled = false;
         fetchThumbnail(link).then((t) => { if (!cancelled) setThumb(t); });
@@ -272,7 +272,7 @@ export default function Work() {
     const devBtnRef = useRef<HTMLButtonElement>(null);
 
     useEffect(() => {
-        fetch("/api/projects")
+        fetch("/api/projects", { cache: "no-store" })
             .then((r) => r.json())
             .then((data) => {
                 setMediaProjects(data.MEDIA_PROJECTS || []);

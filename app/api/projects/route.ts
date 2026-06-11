@@ -3,6 +3,8 @@ import { Redis } from '@upstash/redis';
 import fs from 'fs';
 import path from 'path';
 
+export const dynamic = 'force-dynamic';
+
 const PROJECTS_KEY = 'portfolio:projects';
 
 // Initialize Redis only if env vars are present (safe for local dev without KV)

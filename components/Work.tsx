@@ -395,7 +395,12 @@ export default function Work() {
                     display: flex;
                     align-items: stretch;
                     position: relative;
-                    /* animated sliding underline */
+                    overflow-x: auto;
+                    -ms-overflow-style: none;
+                    scrollbar-width: none;
+                }
+                .work-switcher::-webkit-scrollbar {
+                    display: none;
                 }
 
                 /* Animated underline indicator */
@@ -413,15 +418,22 @@ export default function Work() {
                     position: relative;
                     display: flex;
                     align-items: center;
-                    gap: 14px;
-                    padding: 28px 0 24px;
-                    margin-right: 56px;
+                    gap: 10px;
+                    padding: 16px 0 12px;
+                    margin-right: 32px;
                     background: none;
                     border: none;
                     cursor: pointer;
                     text-align: left;
                     transition: all 0.3s ease;
                     white-space: nowrap;
+                }
+                @media (min-width: 768px) {
+                    .work-tab-btn {
+                        padding: 28px 0 24px;
+                        margin-right: 56px;
+                        gap: 14px;
+                    }
                 }
                 .work-tab-btn:last-child {
                     margin-right: 0;
@@ -430,7 +442,7 @@ export default function Work() {
                 .work-tab-label {
                     font-family: 'Syne', sans-serif;
                     font-weight: 800;
-                    font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+                    font-size: clamp(1.4rem, 6vw, 2.8rem);
                     letter-spacing: -0.03em;
                     line-height: 1;
                     transition: color 0.35s ease, opacity 0.35s ease;
@@ -493,26 +505,27 @@ export default function Work() {
 
                 /* ─── Grid layouts */
                 .masonry-work {
-                    columns: 1;
-                    column-gap: 1.25rem;
+                    columns: 2;
+                    column-gap: 1rem;
                     width: 100%;
                 }
-                @media (min-width: 500px)  { .masonry-work { columns: 2; } }
+                @media (min-width: 768px)  { .masonry-work { column-gap: 1.25rem; } }
                 @media (min-width: 900px)  { .masonry-work { columns: 3; } }
                 @media (min-width: 1300px) { .masonry-work { columns: 4; } }
 
                 .masonry-work-item {
                     break-inside: avoid;
-                    margin-bottom: 1.25rem;
+                    margin-bottom: 1rem;
                 }
+                @media (min-width: 768px)  { .masonry-work-item { margin-bottom: 1.25rem; } }
 
                 .dev-grid-work {
                     display: grid;
-                    grid-template-columns: 1fr;
-                    gap: 1.25rem;
+                    grid-template-columns: repeat(2, 1fr);
+                    gap: 1rem;
                     width: 100%;
                 }
-                @media (min-width: 640px)  { .dev-grid-work { grid-template-columns: repeat(2, 1fr); } }
+                @media (min-width: 768px)  { .dev-grid-work { gap: 1.25rem; } }
                 @media (min-width: 1024px) { .dev-grid-work { grid-template-columns: repeat(3, 1fr); } }
 
                 /* ─── Card shared styles */
@@ -533,20 +546,29 @@ export default function Work() {
                     display: flex;
                     align-items: center;
                     justify-content: space-between;
-                    padding: 14px 18px;
+                    padding: 10px 12px;
                     border-top: 1px solid var(--glass-border);
-                    gap: 10px;
+                    gap: 8px;
+                }
+                @media (min-width: 768px) {
+                    .work-card-info {
+                        padding: 14px 18px;
+                        gap: 10px;
+                    }
                 }
 
                 .work-card-title {
                     font-family: 'Syne', sans-serif;
                     font-weight: 800;
-                    font-size: 0.88rem;
+                    font-size: 0.75rem;
                     color: var(--text);
                     line-height: 1.2;
                     white-space: nowrap;
                     overflow: hidden;
                     text-overflow: ellipsis;
+                }
+                @media (min-width: 768px) {
+                    .work-card-title { font-size: 0.88rem; }
                 }
 
                 .work-card-sub {
@@ -565,16 +587,23 @@ export default function Work() {
 
                 .work-tag {
                     font-family: 'Space Mono', monospace;
-                    font-size: 0.5rem;
+                    font-size: 0.45rem;
                     text-transform: uppercase;
-                    letter-spacing: 0.12em;
-                    padding: 3px 8px;
+                    letter-spacing: 0.1em;
+                    padding: 2px 6px;
                     background: rgba(5,5,10,0.75);
                     border: 1px solid rgba(249,115,22,0.35);
                     color: var(--accent);
                     backdrop-filter: blur(8px);
                     border-radius: 4px;
                     white-space: nowrap;
+                }
+                @media (min-width: 768px) {
+                    .work-tag {
+                        font-size: 0.5rem;
+                        padding: 3px 8px;
+                        letter-spacing: 0.12em;
+                    }
                 }
 
                 /* ─── Reveal animation */
@@ -640,45 +669,45 @@ export default function Work() {
                     </div>
                 </div>
 
-                {/* ── THE SWITCHER ── */}
-                <div className="work-switcher-wrap work-header-reveal" style={{ animationDelay: "160ms" }}>
-                    <div className="work-switcher" ref={tabBarRef} role="tablist">
-                        {/* Animated underline */}
+                {/* ── THE SWITCHER (Segmented Pill) ── */}
+                <div className="work-switcher-wrap work-header-reveal flex mb-10 border-none" style={{ animationDelay: "160ms" }}>
+                    <div className="relative grid grid-cols-2 p-1 rounded-full bg-[rgba(255,255,255,0.03)] border border-[var(--glass-border)] w-[260px] sm:w-[320px] mx-auto md:mx-0" role="tablist">
+                        {/* Sliding Pill Background */}
                         <div
-                            className="work-switcher-indicator"
-                            style={{ left: sliderStyle.left, width: sliderStyle.width }}
+                            className="absolute top-1 bottom-1 rounded-full bg-[var(--accent)] transition-all duration-400 ease-out"
+                            style={{
+                                left: activeTab === 'media' ? '4px' : '50%',
+                                width: 'calc(50% - 4px)',
+                                boxShadow: '0 2px 10px rgba(249,115,22,0.2)'
+                            }}
                         />
 
                         {/* Media Tab */}
                         <button
-                            ref={mediaBtnRef}
                             role="tab"
                             aria-selected={activeTab === "media"}
                             onClick={() => setActiveTab("media")}
-                            className="work-tab-btn"
+                            className={`relative z-10 flex flex-row items-center justify-center gap-1.5 px-2 py-2 rounded-full transition-colors duration-300 ${
+                                activeTab === "media" ? "text-black" : "text-[var(--muted)] hover:text-[var(--text)]"
+                            }`}
                         >
-                            <div>
-                                <div className="work-tab-label">Film &amp; Motion</div>
-                                <div className="work-tab-desc">Video · Animation · Direction</div>
-                            </div>
-                            <span className="work-tab-badge">
+                            <span className="font-mono text-[0.55rem] sm:text-[0.6rem] uppercase tracking-wider font-bold">Film & Motion</span>
+                            <span className={`font-mono text-[0.5rem] px-1.5 py-0.5 rounded-full border ${activeTab === 'media' ? 'border-black/30' : 'border-[var(--border)]'}`}>
                                 {loading ? "—" : mediaProjects.length}
                             </span>
                         </button>
 
                         {/* Dev Tab */}
                         <button
-                            ref={devBtnRef}
                             role="tab"
                             aria-selected={activeTab === "dev"}
                             onClick={() => setActiveTab("dev")}
-                            className="work-tab-btn"
+                            className={`relative z-10 flex flex-row items-center justify-center gap-1.5 px-2 py-2 rounded-full transition-colors duration-300 ${
+                                activeTab === "dev" ? "text-black" : "text-[var(--muted)] hover:text-[var(--text)]"
+                            }`}
                         >
-                            <div>
-                                <div className="work-tab-label">Digital &amp; Dev</div>
-                                <div className="work-tab-desc">Web · Apps · Engineering</div>
-                            </div>
-                            <span className="work-tab-badge">
+                            <span className="font-mono text-[0.55rem] sm:text-[0.6rem] uppercase tracking-wider font-bold">Digital & Dev</span>
+                            <span className={`font-mono text-[0.5rem] px-1.5 py-0.5 rounded-full border ${activeTab === 'dev' ? 'border-black/30' : 'border-[var(--border)]'}`}>
                                 {loading ? "—" : devProjects.length}
                             </span>
                         </button>

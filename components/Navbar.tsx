@@ -64,10 +64,10 @@ export default function Navbar() {
     return (
         <>
             <nav
-                className={`fixed top-0 left-0 right-0 z-[100] flex justify-between items-center px-5 md:px-14 transition-all duration-500 bg-transparent ${
-                    scrolled
+                className={`fixed top-0 left-0 right-0 z-[110] flex justify-between items-center px-5 md:px-14 transition-all duration-500 bg-transparent ${
+                    scrolled && !mobileOpen
                         ? "py-3 backdrop-blur-2xl border-b shadow-lg border-[var(--glass-border)]"
-                        : "py-5 backdrop-blur-sm border-b border-transparent"
+                        : "py-5 border-b border-transparent"
                 }`}
             >
                 {/* Subtle orange tint */}
@@ -130,7 +130,7 @@ export default function Navbar() {
 
             {/* Mobile Menu Overlay */}
             <div
-                className={`fixed inset-0 z-[105] flex flex-col items-center justify-center gap-10 transition-all duration-500 md:hidden ${
+                className={`fixed inset-0 z-[105] flex flex-col items-center justify-center gap-6 overflow-y-auto py-10 transition-all duration-500 md:hidden ${
                     mobileOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
                 }`}
                 style={{
@@ -146,7 +146,7 @@ export default function Navbar() {
                         key={link.name}
                         href={link.href}
                         onClick={() => setMobileOpen(false)}
-                        className={`font-bebas text-5xl uppercase tracking-widest transition-colors duration-200 ${
+                        className={`font-bebas text-4xl uppercase tracking-widest transition-colors duration-200 ${
                             isActive(link.href) ? "text-[var(--accent)]" : "text-[var(--text)] hover:text-[var(--accent)]"
                         }`}
                         style={{ animationDelay: `${i * 60}ms` }}

@@ -44,11 +44,25 @@
     --radius-sm: 8px;
 
     /* Section spacing */
-    --section-py: 120px;
+    --section-py: 60px;
     --container-max: 1440px;
-    --container-px: 40px;
+    --container-px: 20px;
     --text-max: 700px;
     --prose-max: 480px;
+  }
+
+  @media (min-width: 768px) {
+    :root {
+      --section-py: 90px;
+      --container-px: 32px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    :root {
+      --section-py: 120px;
+      --container-px: 40px;
+    }
   }
 
   [data-theme="light"] {

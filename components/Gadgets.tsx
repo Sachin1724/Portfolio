@@ -112,58 +112,81 @@ export default function Gadgets() {
                     </span>
                 </div>
 
-                {/* Hero gear — 3 large cards */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-5 fade-in">
-                    {heroGear.map((item, i) => (
-                        <GadgetCard key={`hero-${i}`} item={item} featured />
+                <style>{`
+                    .hide-scrollbar::-webkit-scrollbar { display: none; }
+                    .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+                `}</style>
+
+                {/* Mobile: All gear in a single horizontal carousel */}
+                <div 
+                    className="flex sm:hidden gap-4 mb-5 fade-in overflow-x-auto snap-x snap-mandatory hide-scrollbar pb-6"
+                    style={{ 
+                        marginLeft: "calc(-1 * var(--container-px))",
+                        marginRight: "calc(-1 * var(--container-px))",
+                        paddingLeft: "var(--container-px)",
+                        paddingRight: "var(--container-px)"
+                    }}
+                >
+                    {EQUIPMENT.map((item, i) => (
+                        <div key={`mobile-gear-${i}`} className="w-[70vw] max-w-[280px] snap-center shrink-0">
+                            <GadgetCard item={item} featured={false} />
+                        </div>
                     ))}
                 </div>
 
-                {/* Expandable rest */}
-                {restGear.length > 0 && (
-                    <>
-                        <div
-                            className="overflow-hidden transition-all duration-600"
-                            style={{
-                                maxHeight: expanded ? `${restGear.length * 300}px` : "0",
-                                opacity: expanded ? 1 : 0,
-                                marginBottom: expanded ? "20px" : "0",
-                            }}
-                        >
-                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 pt-1">
-                                {restGear.map((item, i) => (
-                                    <GadgetCard key={`rest-${i}`} item={item} />
-                                ))}
-                            </div>
-                        </div>
+                {/* Desktop: Hero + Expandable grid */}
+                <div className="hidden sm:block">
+                    <div className="grid grid-cols-3 gap-5 mb-5 fade-in">
+                        {heroGear.map((item, i) => (
+                            <GadgetCard key={`hero-${i}`} item={item} featured />
+                        ))}
+                    </div>
 
-                        <div className="flex justify-center fade-in">
-                            <button
-                                onClick={() => setExpanded(!expanded)}
-                                className="flex items-center gap-3 font-mono text-[0.65rem] uppercase tracking-[0.14em] px-8 py-3 transition-all duration-300"
+                    {restGear.length > 0 && (
+                        <>
+                            <div
+                                className="overflow-hidden transition-all duration-600"
                                 style={{
-                                    border: "1px solid var(--border)",
-                                    color: "var(--muted)",
-                                    background: "var(--glass-border-subtle)",
-                                    borderRadius: "var(--radius-pill)",
-                                    backdropFilter: "blur(8px)",
-                                }}
-                                onMouseEnter={(e) => {
-                                    (e.currentTarget as HTMLElement).style.borderColor = "rgba(249,115,22,0.4)";
-                                    (e.currentTarget as HTMLElement).style.color = "var(--accent)";
-                                    (e.currentTarget as HTMLElement).style.transform = "translateY(-2px)";
-                                }}
-                                onMouseLeave={(e) => {
-                                    (e.currentTarget as HTMLElement).style.borderColor = "var(--border)";
-                                    (e.currentTarget as HTMLElement).style.color = "var(--muted)";
-                                    (e.currentTarget as HTMLElement).style.transform = "";
+                                    maxHeight: expanded ? `${restGear.length * 300}px` : "0",
+                                    opacity: expanded ? 1 : 0,
+                                    marginBottom: expanded ? "20px" : "0",
                                 }}
                             >
-                                {expanded ? "↑ Show Less" : `+ Show All ${restGear.length} More Items`}
-                            </button>
-                        </div>
-                    </>
-                )}
+                                <div className="grid grid-cols-2 lg:grid-cols-3 gap-5 pt-1">
+                                    {restGear.map((item, i) => (
+                                        <GadgetCard key={`rest-${i}`} item={item} />
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div className="flex justify-center fade-in">
+                                <button
+                                    onClick={() => setExpanded(!expanded)}
+                                    className="flex items-center gap-3 font-mono text-[0.65rem] uppercase tracking-[0.14em] px-8 py-3 transition-all duration-300"
+                                    style={{
+                                        border: "1px solid var(--border)",
+                                        color: "var(--muted)",
+                                        background: "var(--glass-border-subtle)",
+                                        borderRadius: "var(--radius-pill)",
+                                        backdropFilter: "blur(8px)",
+                                    }}
+                                    onMouseEnter={(e) => {
+                                        (e.currentTarget as HTMLElement).style.borderColor = "rgba(249,115,22,0.4)";
+                                        (e.currentTarget as HTMLElement).style.color = "var(--accent)";
+                                        (e.currentTarget as HTMLElement).style.transform = "translateY(-2px)";
+                                    }}
+                                    onMouseLeave={(e) => {
+                                        (e.currentTarget as HTMLElement).style.borderColor = "var(--border)";
+                                        (e.currentTarget as HTMLElement).style.color = "var(--muted)";
+                                        (e.currentTarget as HTMLElement).style.transform = "";
+                                    }}
+                                >
+                                    {expanded ? "↑ Show Less" : `+ Show All ${restGear.length} More Items`}
+                                </button>
+                            </div>
+                        </>
+                    )}
+                </div>
             </div>
         </section>
     );

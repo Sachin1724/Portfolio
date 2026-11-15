@@ -5,20 +5,20 @@ Built with Next.js 15, TypeScript and Tailwind CSS.
 
 ## Design
 
-A maximalist poster look drawn from Odisha: Pattachitra colours, the pasapali check from
-Sambalpuri weaving, ikat zigzags, and film details (clapper slate, film strip) for the editing work.
+Colourful maximalist "Sachu®" pattern: paper background, full-bleed blue, pink and lime
+sections, 1.5px ink outlines, pill buttons, stickers and a tilted ticker.
 
-| Token     | Value     | Named after  |
-| --------- | --------- | ------------ |
-| `haldi`   | `#FFC21A` | turmeric     |
-| `sindoor` | `#DE2A22` | vermilion    |
-| `neel`    | `#2531C4` | indigo       |
-| `paan`    | `#08774D` | betel leaf   |
-| `rani`    | `#F2438F` | rani pink    |
-| `kajal`   | `#16110D` | lamp black   |
-| `chuna`   | `#FFF6E0` | lime plaster |
+| Token    | Value     |
+| -------- | --------- |
+| `paper`  | `#F7F1E7` |
+| `ink`    | `#171717` |
+| `pink`   | `#FF4FA0` |
+| `blue`   | `#4C55FF` |
+| `lime`   | `#C7FF47` |
+| `orange` | `#FF6B35` |
+| `purple` | `#BBA2FF` |
 
-Type: Rozha One (display), Anek Odia (text and Odia script), Space Mono (labels).
+Type: Syne (display), Space Grotesk (text), DM Mono (labels).
 All site styles live in `app/globals.css` under the `.site` scope.
 
 ## Page flow
@@ -28,7 +28,8 @@ teaching in Odia → experience and education → testimonials → FAQ → conta
 
 ## Editing content
 
-- Text, packages, FAQ, testimonials, gear, links: `lib/constants.ts`
+- Text, packages, FAQ, testimonials, gear, links, brand name: `lib/constants.ts`
+- Instagram numbers: `HERO_STATS`, `IG_STATS`, `IG_PERIOD` in `lib/constants.ts`
 - Projects: `data/projects.json`, or the `/admin` dashboard (Upstash Redis, see `.env.local.example`)
 - Images: `public/assets/images/`
 

@@ -13,36 +13,28 @@ import Journey from "@/components/Journey";
 import Testimonials from "@/components/Testimonials";
 import FAQ from "@/components/FAQ";
 import Contact from "@/components/Contact";
-import Footer from "@/components/Footer";
 
 export default function Home() {
     return (
         <div className="site">
+            <div className="noise" aria-hidden="true" />
             <Nav />
-            <main>
+            <main id="top">
                 <Hero />
                 <Marquee />
                 <Clients />
-                <div className="pasapali" aria-hidden="true" />
                 <Work />
-                <div className="zig" aria-hidden="true" />
                 <About />
-                <div className="pasapali pasapali--red" aria-hidden="true" />
                 <Toolkit />
                 <Gear />
-                <div className="zig" aria-hidden="true" style={{ ["--b" as string]: "var(--rani)" }} />
                 <Packages />
-                <div className="pasapali" aria-hidden="true" />
                 <Onboarding />
                 <Teaching />
-                <div className="zig" aria-hidden="true" style={{ ["--b" as string]: "var(--chuna)" }} />
                 <Journey />
                 <Testimonials />
-                <div className="pasapali pasapali--red" aria-hidden="true" />
                 <FAQ />
                 <Contact />
             </main>
-            <Footer />
         </div>
     );
 }

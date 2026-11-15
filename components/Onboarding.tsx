@@ -1,28 +1,35 @@
+import SectionHead from "@/components/SectionHead";
 import { PROCESS_STEPS } from "@/lib/constants";
 import KeywordPicker from "@/components/KeywordPicker";
 
 export default function Onboarding() {
     return (
-        <section id="onboarding" className="band band--haldi">
+        <section id="onboarding" className="process">
             <div className="wrap">
-                <div className="band__head">
-                    <p className="kicker">How we start</p>
-                    <h2 className="h-lg">
-                        No forms. No calls. <span className="hl hl--red">DM a keyword.</span>
-                    </h2>
-                </div>
+                <SectionHead
+                    label="06 / HOW WE START"
+                    title={
+                        <>
+                            FROM “HI”
+                            <br />
+                            TO “IT&apos;S DELIVERED.”
+                        </>
+                    }
+                    note="No forms. No calls. Just a DM on Instagram with the package keyword."
+                />
 
-                <div className="film">
-                    <ol className="film__frames">
-                        {PROCESS_STEPS.map((step) => (
-                            <li key={step.num} className="film__frame">
-                                <span className="film__num">{step.num}</span>
-                                <h3 className="film__title">{step.title}</h3>
-                                <p className="film__desc">{step.description}</p>
-                            </li>
-                        ))}
-                    </ol>
-                </div>
+                <ol className="process-list">
+                    {PROCESS_STEPS.map((step, i) => (
+                        <li key={step.num} className="process-row">
+                            <div className="num mono">{step.num} ✳</div>
+                            <h3>{step.title}</h3>
+                            <p>{step.description}</p>
+                            <div className="arrow" aria-hidden="true">
+                                {i === PROCESS_STEPS.length - 1 ? "↗" : "↘"}
+                            </div>
+                        </li>
+                    ))}
+                </ol>
 
                 <KeywordPicker />
             </div>

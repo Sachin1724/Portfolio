@@ -13,15 +13,15 @@ export default function MailForm() {
     };
 
     return (
-        <div className="mailer frame">
-            <h3 className="h-md">Direct mail</h3>
-            <p style={{ marginTop: "0.5rem" }}>Prefer email? This opens your mail app with the message ready to send.</p>
+        <div className="mailer">
+            <p className="eyebrow mono">DIRECT MAIL</p>
+            <p>Prefer email? This opens your mail app with the message ready to send.</p>
             <form onSubmit={handleSubmit}>
-                <label htmlFor="mail-subject">
+                <label htmlFor="mail-subject" className="mono">
                     Subject
                     <input id="mail-subject" name="subject" type="text" required placeholder="Reel retainer for my brand" />
                 </label>
-                <label htmlFor="mail-message">
+                <label htmlFor="mail-message" className="mono">
                     Message
                     <textarea
                         id="mail-message"
@@ -31,8 +31,8 @@ export default function MailForm() {
                         placeholder="What you need, your budget, and your timeline."
                     />
                 </label>
-                <button type="submit" className="btn btn--red">
-                    Open in mail app →
+                <button type="submit" className="btn dark">
+                    OPEN IN MAIL APP ↗
                 </button>
             </form>
         </div>

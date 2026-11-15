@@ -1,113 +1,68 @@
 import Image from "next/image";
-import { HERO_STATS, RESUME_URL } from "@/lib/constants";
-
-function AvailableBadge() {
-    return (
-        <svg className="hero__badge" viewBox="0 0 200 200" role="img" aria-label="Available for work">
-            <circle cx="100" cy="100" r="97" fill="var(--paan)" stroke="var(--kajal)" strokeWidth="6" />
-            <defs>
-                <path id="badge-ring" d="M100,100 m-70,0 a70,70 0 1,1 140,0 a70,70 0 1,1 -140,0" />
-            </defs>
-            <text
-                fill="var(--chuna)"
-                fontFamily="var(--mono)"
-                fontSize="19.5"
-                fontWeight="700"
-                letterSpacing="3.2"
-            >
-                <textPath href="#badge-ring">AVAILABLE FOR WORK ✺ AVAILABLE FOR WORK ✺</textPath>
-            </text>
-            <circle cx="100" cy="100" r="30" fill="var(--haldi)" stroke="var(--kajal)" strokeWidth="5" />
-            <circle cx="100" cy="100" r="11" fill="var(--sindoor)" />
-        </svg>
-    );
-}
+import { HERO_STATS, RESUME_URL, BRAND } from "@/lib/constants";
 
 export default function Hero() {
     return (
-        <section id="home" className="band--haldi">
-            <div className="hero">
-                <div className="hero__rays" aria-hidden="true" />
-                <div className="wrap hero__grid">
-                    <div>
-                        <p className="hero__hello">
-                            <span className="or" lang="or">
-                                ନମସ୍କାର
-                            </span>
-                            I&apos;m Sachin Dada. I edit, code and shoot from Odisha.
-                        </p>
-                        <h1 className="h-xl hero__title">
-                            Build brands people <span className="hl hl--red">remember</span>
-                            <span className="hero__amp">&amp; content that converts.</span>
-                        </h1>
-                        <p className="lede hero__lede">
-                            Video, web, branding and content systems, crafted for Odia creators, startups, and
-                            brands that want to stand out.
-                        </p>
-                        <div className="hero__cta">
-                            <a href="#work" className="btn btn--ink">
-                                See the work ↓
-                            </a>
-                            <a href="#onboarding" className="btn btn--red">
-                                Start a project
-                            </a>
-                            <a href={RESUME_URL} className="link-arrow" target="_blank" rel="noopener noreferrer">
-                                Résumé (PDF) ↗
-                            </a>
-                        </div>
-                        <ul className="stubs">
-                            {HERO_STATS.map((stat) => (
-                                <li key={stat.label} className="stub">
-                                    <span className="stub__num">{stat.value}</span>
-                                    <span className="stub__label">{stat.label}</span>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-
-                    <div className="hero__art">
-                        <div className="sun">
-                            <div className="sun__disc">
-                                <Image
-                                    src="/assets/images/profile-pic.png"
-                                    alt="Sachin Dada"
-                                    width={1254}
-                                    height={802}
-                                    priority
-                                    sizes="(max-width: 900px) 520px, 700px"
-                                    className="sun__photo"
-                                />
-                            </div>
-                        </div>
-                        <AvailableBadge />
-                        <p className="hero__name or" lang="or">
-                            ସଚିନ ଦାଦା
-                        </p>
-                    </div>
-                </div>
+        <section className="wrap hero">
+            <div className="hero-top">
+                <span className="pill mono">
+                    <span className="dot" /> AVAILABLE FOR WORK
+                </span>
+                <span className="mono">INDEPENDENT CREATOR · ODISHA, INDIA ↘</span>
             </div>
 
-            <div className="slate">
-                <div className="slate__stripes" aria-hidden="true" />
-                <div className="wrap slate__row">
-                    <span>
-                        <span className="rec" aria-hidden="true">
-                            ●
-                        </span>{" "}
-                        Rec
-                    </span>
-                    <span>
-                        <b>Prod.</b> Sachin Dada
-                    </span>
-                    <span>
-                        <b>Roll</b> Video / Web / Brand
-                    </span>
-                    <span>
-                        <b>Loc.</b> Odisha, India
-                    </span>
-                    <span>
-                        <b>Lang.</b> Odia · Hindi · English
-                    </span>
+            <div className="hero-grid">
+                <div>
+                    <h1>
+                        HELLO,<span className="line2">I&apos;M</span>
+                        <span className="line3">{BRAND}.</span>
+                    </h1>
+                    <p className="hero-desc">
+                        I build <strong>brands people remember</strong> and content that converts. Video, web,
+                        branding and content systems for Odia creators, startups and brands that want to stand out.
+                    </p>
+                    <div className="hero-actions">
+                        <a className="btn primary" href="#work">
+                            EXPLORE MY WORK <span>↘</span>
+                        </a>
+                        <a className="btn" href="#onboarding">
+                            START A PROJECT ↗
+                        </a>
+                        <a className="btn" href={RESUME_URL} target="_blank" rel="noopener noreferrer">
+                            RÉSUMÉ ↗
+                        </a>
+                    </div>
+                    <ul className="hero-stats">
+                        {HERO_STATS.map((stat) => (
+                            <li key={stat.label}>
+                                <b>{stat.value}</b>
+                                <span className="mono">{stat.label}</span>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+
+                <div className="hero-art">
+                    <div className="sunburst" />
+                    <div className="portrait">
+                        <Image
+                            src="/assets/images/profile-pic.png"
+                            alt="Sachin Dada"
+                            width={1254}
+                            height={802}
+                            priority
+                            sizes="(max-width: 800px) 420px, 600px"
+                        />
+                        <div className="portrait-label">
+                            <span>MADE IN ODISHA</span>
+                            <span>✳ 2026</span>
+                        </div>
+                    </div>
+                    <div className="sticker sticker-star" aria-hidden="true">
+                        ✳
+                    </div>
+                    <div className="sticker sticker-dev">CODE × CREATE</div>
+                    <div className="sticker sticker-od">ODIA ROOTS ↗</div>
                 </div>
             </div>
         </section>

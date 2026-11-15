@@ -1,134 +1,47 @@
-# Sachin Mallick - Personal Portfolio
+# Sachin Dada — Portfolio
 
-A modern, single-page personal portfolio website built with Next.js, TypeScript, Tailwind CSS, and Framer Motion.
+Single-page portfolio for Sachin Mallick: video editor, web developer and Odia tech creator.
+Built with Next.js 15, TypeScript and Tailwind CSS.
 
-## 🎨 Features
+## Design
 
-- **Animated Preloader** with custom SM monogram logo
-- **Glassmorphism UI** with smooth animations
-- **Role Rotation** animation in hero section
-- **Tabbed Work Section** showcasing Media and Development projects
-- **Scroll Reveal Animations** throughout all sections
-- **Responsive Design** optimized for all devices
-- **Contact Form** with success feedback
-- **Dark Theme** with vibrant accent colors
+A maximalist poster look drawn from Odisha: Pattachitra colours, the pasapali check from
+Sambalpuri weaving, ikat zigzags, and film details (clapper slate, film strip) for the editing work.
 
-## 🎯 Sections
+| Token     | Value     | Named after  |
+| --------- | --------- | ------------ |
+| `haldi`   | `#FFC21A` | turmeric     |
+| `sindoor` | `#DE2A22` | vermilion    |
+| `neel`    | `#2531C4` | indigo       |
+| `paan`    | `#08774D` | betel leaf   |
+| `rani`    | `#F2438F` | rani pink    |
+| `kajal`   | `#16110D` | lamp black   |
+| `chuna`   | `#FFF6E0` | lime plaster |
 
-1. **Hero** - Introduction with role rotation and social links
-2. **About** - Personal introduction and interests
-3. **Education** - Academic background with timeline
-4. **Work** - Tabbed showcase of Media and Development projects
-5. **Skills** - Categorized skill sets
-6. **Equipment** - Tools and gear used
-7. **Experience** - Work history with timeline
-8. **Contact** - Contact form and social links
+Type: Rozha One (display), Anek Odia (text and Odia script), Space Mono (labels).
+All site styles live in `app/globals.css` under the `.site` scope.
 
-## 🚀 Getting Started
+## Page flow
 
-### Prerequisites
+Hero → clients → work → about → toolkit → gear → packages → onboarding (DM a keyword) →
+teaching in Odia → experience and education → testimonials → FAQ → contact.
 
-- Node.js 18+ installed
-- npm or yarn package manager
+## Editing content
 
-### Installation
+- Text, packages, FAQ, testimonials, gear, links: `lib/constants.ts`
+- Projects: `data/projects.json`, or the `/admin` dashboard (Upstash Redis, see `.env.local.example`)
+- Images: `public/assets/images/`
 
-1. Install dependencies:
+## Run it
+
 ```bash
 npm install
 ```
 
-2. Run the development server:
 ```bash
 npm run dev
 ```
 
-3. Open [http://localhost:3000](http://localhost:3000) in your browser
-
-### Build for Production
-
 ```bash
 npm run build
-npm start
 ```
-
-## 🎨 Color Palette
-
-- **Background**: `#211832`
-- **Primary Accent**: `#F25912`
-- **Secondary Accent 1**: `#5C3E94`
-- **Secondary Accent 2**: `#412B6B`
-
-## 📝 Customization
-
-### Update Personal Information
-
-Edit the constants in `/lib/constants.ts`:
-- Social links
-- Projects (Media and Development)
-- Skills
-- Equipment
-- Work experience
-- Education
-
-### Add Your Photo
-
-Replace the placeholder in `/components/Hero.tsx` with your actual image:
-1. Add your image to `/public/sachin.png`
-2. Update the Hero component to use the image
-
-### Update Fonts
-
-The project uses **Plus Jakarta Sans** from Google Fonts as a placeholder. To use custom fonts:
-1. Add font files to `/public/fonts/`
-2. Update `/app/layout.tsx` to use `next/font/local`
-
-## 🛠️ Tech Stack
-
-- **Framework**: Next.js 15
-- **Language**: TypeScript
-- **Styling**: Tailwind CSS
-- **Animations**: Framer Motion
-- **Scroll Detection**: react-intersection-observer
-
-## 📦 Project Structure
-
-```
-Portfolio/
-├── app/
-│   ├── globals.css
-│   ├── layout.tsx
-│   └── page.tsx
-├── components/
-│   ├── Preloader.tsx
-│   ├── Navbar.tsx
-│   ├── Hero.tsx
-│   ├── About.tsx
-│   ├── Education.tsx
-│   ├── Work.tsx
-│   ├── ProjectCard.tsx
-│   ├── Skills.tsx
-│   ├── SkillCategoryCard.tsx
-│   ├── Equipment.tsx
-│   ├── Experience.tsx
-│   ├── TimelineItem.tsx
-│   └── Contact.tsx
-├── hooks/
-│   └── useScrollReveal.ts
-├── lib/
-│   └── constants.ts
-├── types/
-│   └── index.ts
-└── public/
-```
-
-## 📄 License
-
-© 2025 Sachin Mallick. All rights reserved.
-
-## 🤝 Contact
-
-- Email: sachin@example.com
-- GitHub: [Update in constants.ts]
-- LinkedIn: [Update in constants.ts]
-- Instagram: [Update in constants.ts]

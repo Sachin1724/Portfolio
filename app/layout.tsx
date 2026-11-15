@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
-import { Syne, Space_Mono, Bebas_Neue } from "next/font/google";
+import { Rozha_One, Anek_Odia, Space_Mono } from "next/font/google";
 import "./globals.css";
-import CursorGlow from "@/components/CursorGlow";
-import SmoothScroll from "@/components/SmoothScroll";
 
-const syne = Syne({ subsets: ["latin"], variable: "--font-syne" });
-const spaceMono = Space_Mono({ subsets: ["latin"], weight: ["400", "700"], variable: "--font-mono" });
-const bebasNeue = Bebas_Neue({ subsets: ["latin"], weight: ["400"], variable: "--font-bebas" });
+const display = Rozha_One({ subsets: ["latin"], weight: "400", variable: "--font-display", display: "swap" });
+const text = Anek_Odia({ subsets: ["latin", "oriya"], axes: ["wdth"], variable: "--font-text", display: "swap" });
+const mono = Space_Mono({ subsets: ["latin"], weight: ["400", "700"], variable: "--font-mono", display: "swap" });
+
 export const metadata: Metadata = {
     metadataBase: new URL("https://sachidanandamallick.vercel.app"),
     title: "Sachin Dada — Cinematic Creator & Dev Freelancer",
@@ -23,42 +22,15 @@ export const metadata: Metadata = {
     ],
     openGraph: {
         title: "Sachin Dada — Cinematic Creator & Dev Freelancer",
-        description:
-            "B.Tech student from Odisha. Developer, Video Editor, and Creator.",
+        description: "B.Tech student from Odisha. Developer, Video Editor, and Creator.",
         type: "website",
     },
 };
 
-export default function RootLayout({
-    children,
-}: Readonly<{
-    children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
     return (
-        <html lang="en" suppressHydrationWarning>
-            <head>
-                <script
-                    dangerouslySetInnerHTML={{
-                        __html: `
-                            (function() {
-                                try {
-                                    var stored = localStorage.getItem('theme');
-                                    if (stored) {
-                                        document.documentElement.setAttribute('data-theme', stored);
-                                    } else {
-                                        document.documentElement.setAttribute('data-theme', 'dark');
-                                    }
-                                } catch (e) {}
-                            })();
-                        `,
-                    }}
-                />
-            </head>
-            <body className={`antialiased ${syne.variable} ${spaceMono.variable} ${bebasNeue.variable}`} suppressHydrationWarning>
-                <SmoothScroll>
-                    {children}
-                </SmoothScroll>
-            </body>
+        <html lang="en">
+            <body className={`antialiased ${display.variable} ${text.variable} ${mono.variable}`}>{children}</body>
         </html>
     );
 }

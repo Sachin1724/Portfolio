@@ -12,11 +12,11 @@ import {
 
 // ─── Navigation ───────────────────────────────────────────
 export const NAV_LINKS = [
-    { name: "About", href: "#about" },
     { name: "Work", href: "#work" },
-    { name: "Skills", href: "#skills" },
-    { name: "Gadgets", href: "#gadgets" },
-    { name: "Experience", href: "#experience" },
+    { name: "About", href: "#about" },
+    { name: "Toolkit", href: "#toolkit" },
+    { name: "Packages", href: "#packages" },
+    { name: "How it works", href: "#onboarding" },
     { name: "Contact", href: "#contact" },
 ];
 
@@ -30,8 +30,9 @@ export const SOCIAL_LINKS = [
 // ─── Hero Stats ───────────────────────────────────────────
 export const HERO_STATS = [
     { value: "2.4K", label: "Followers" },
-    { value: "1.7Lakh", label: "Views / Month" },
+    { value: "1.7L", label: "Views / month" },
     { value: "77", label: "Posts" },
+    { value: "12+", label: "Clients" },
 ];
 
 // ─── Skills Ticker ────────────────────────────────────────
@@ -244,7 +245,7 @@ export const EQUIPMENT: EquipmentItem[] = [
         icon: "camera",
         type: "Primary Camera",
         model: "Canon EOS",
-        image: "/assets/images/canon-camera.png",
+        image: "/assets/images/gadgets/sony-a6700.png",
         usage: "Used for shooting production photos and high-resolution videos",
         specs: [
             "Type: DSLR / Mirrorless",
@@ -259,7 +260,7 @@ export const EQUIPMENT: EquipmentItem[] = [
         icon: "laptop",
         type: "Laptop",
         model: "ASUS TUF A15 RTX 4050",
-        image: "/assets/images/asus-laptop.jpg",
+        image: "/assets/images/gadgets/asus-tuf-a15.png",
         usage: "Main machine for video editing, coding, and development work",
         specs: [
             "Processor: AMD Ryzen 7 7735HS",
@@ -274,7 +275,7 @@ export const EQUIPMENT: EquipmentItem[] = [
         icon: "smartphone",
         type: "Smartphone",
         model: "Samsung S23",
-        image: "/assets/images/samsung-phone.jpg",
+        image: "/assets/images/gadgets/samsung-s23.png",
         usage: "Mobile content creation, quick edits, and social media management",
         specs: [
             'Display: 6.1\" Dynamic AMOLED 2X, 120Hz',
@@ -289,7 +290,7 @@ export const EQUIPMENT: EquipmentItem[] = [
         icon: "microphone",
         type: "Microphone",
         model: "Ulanzi A100 Wireless",
-        image: "/assets/images/microphone.jpg",
+        image: "/assets/images/gadgets/ulanzi-mic.png",
         usage: "Professional audio recording for voiceovers and on-location shoots",
         specs: [
             "System: 2.4GHz wireless",
@@ -303,7 +304,7 @@ export const EQUIPMENT: EquipmentItem[] = [
         icon: "headphones",
         type: "IEM",
         model: "FiiO JD1",
-        image: "/assets/images/iem.jpg",
+        image: "/assets/images/gadgets/fiio-jd1.png",
         usage: "Audio monitoring and precision mixing during editing sessions",
         specs: [
             "Driver: 10mm dynamic driver",
@@ -316,7 +317,7 @@ export const EQUIPMENT: EquipmentItem[] = [
         icon: "light",
         type: "Gimbal",
         model: "DJI OSMO 7P",
-        image: "/assets/images/gimbal.jpg",
+        image: "/assets/images/gadgets/dji-osmo7p.png",
         usage: "Mobile gimbal for smooth shots and on-location production shoots",
         specs: [
             "Type: Smartphone gimbal, 3-axis",
@@ -384,4 +385,77 @@ export const EDUCATION: EducationItem[] = [
         duration: "2021 - 2022",
         description: "Focus on Learning.",
     },
+];
+
+// ─── Contact details ─────────────────────────────────────
+export const INSTAGRAM_HANDLE = "iamsachindada";
+export const INSTAGRAM_URL = "https://www.instagram.com/iamsachindada";
+export const INSTAGRAM_DM_URL = "https://ig.me/m/iamsachindada";
+export const CONTACT_EMAIL = "sachinmallickff.19@gmail.com";
+export const PACKAGES_EMAIL = "sachidanandamallick@gmail.com";
+export const RESUME_URL = "/assets/Resume_New.pdf";
+
+// ─── Onboarding: DM keywords ─────────────────────────────
+export const DM_KEYWORDS = [
+    { keyword: "REELS", desc: "Reel editing package" },
+    { keyword: "VIDEO", desc: "Full-size video package" },
+    { keyword: "BRAND", desc: "Brand starter package" },
+    { keyword: "WEBSITE", desc: "Landing page" },
+    { keyword: "COLLAB", desc: "Brand deals / sponsorship" },
+];
+
+// ─── About ───────────────────────────────────────────────
+export const CURRENTLY_BUILDING = [
+    { title: "Bhasa Odia — TTS Platform", tag: "Open Source" },
+    { title: "Client Reels Retainer", tag: "Freelance" },
+    { title: "Dev Tutorials in Odia", tag: "Content" },
+];
+
+// ─── Toolkit ─────────────────────────────────────────────
+export const TOOLKIT = [
+    {
+        label: "Editing & Film",
+        tools: ["Adobe Premiere Pro", "After Effects", "DaVinci Resolve", "Adobe Photoshop", "Adobe Illustrator", "Blender", "OBS", "Color Grading", "Audio Mixing", "Scriptwriting"],
+    },
+    {
+        label: "Frontend Dev",
+        tools: ["React", "Next.js", "TypeScript", "JavaScript", "Tailwind CSS", "HTML & CSS", "Figma", "UI/UX Design"],
+    },
+    {
+        label: "Backend & Tools",
+        tools: ["Node.js", "Express", "MongoDB", "PostgreSQL", "REST APIs", "Git/GitHub"],
+    },
+    {
+        label: "Creator Skills",
+        tools: ["Cinematography", "Photography", "Reels Editing", "Motion Graphics", "Odia Content", "Storytelling"],
+    },
+];
+
+export const TOOL_LOGOS = [
+    { name: "Adobe Premiere Pro", src: "/assets/images/adobe-premiere-pro.png" },
+    { name: "After Effects", src: "/assets/images/adobe-after-effects.png" },
+    { name: "DaVinci Resolve", src: "/assets/images/Davinci-Resolve.png" },
+    { name: "Adobe Photoshop", src: "/assets/images/adobe-photoshop.png" },
+    { name: "Adobe Illustrator", src: "/assets/images/adobe-Illustrator.png" },
+    { name: "Blender", src: "/assets/images/blender.png" },
+    { name: "OBS", src: "/assets/images/OBS.png" },
+];
+
+// ─── Testimonials ────────────────────────────────────────
+export const TESTIMONIALS = [
+    { name: "Rahul Patel", role: "Startup Founder", text: "Sachin delivered a landing page that actually converts. Clean design, fast delivery, zero drama. Exactly what a startup needs." },
+    { name: "Priya Mohanty", role: "YouTube Creator", text: "The reel editing quality is insane for the price. My engagement went up 3x after Sachin started editing my content. Highly recommend." },
+    { name: "Ankit Sharma", role: "Brand Manager", text: "We needed a complete brand identity — logo, colors, typography, social templates. Sachin nailed it in under 2 weeks. Premium quality work." },
+    { name: "Subhashree Das", role: "Odia Educator", text: "Finally someone creating tech content in Odia! Sachin's tutorials helped my students understand React concepts they were struggling with in English." },
+    { name: "Vikram Nayak", role: "E-commerce Owner", text: "Built our entire product showcase site. Mobile-first, fast loading, beautiful animations. Customers love it. Will work with Sachin again." },
+];
+
+// ─── FAQ ─────────────────────────────────────────────────
+export const FAQS = [
+    { q: "What services do you offer?", a: "I offer brand identity design, UI/UX design, web development (React/Next.js), video editing (reels, YouTube, cinematic), motion graphics, and Odia-language content creation." },
+    { q: "How do I hire you for a project?", a: "Just DM me on Instagram @iamsachindada with a keyword like REELS, VIDEO, BRAND, or WEBSITE. Tell me what you need, your budget, and timeline — I'll get back within 24 hours." },
+    { q: "What are your rates?", a: "Rates depend on scope. Reel editing starts at ₹1,500/reel, brand packages from ₹15,000, and websites from ₹25,000. Check the Packages section for detailed pricing." },
+    { q: "Do you work with international clients?", a: "Yes! I work with clients globally. Communication happens over Instagram DMs or email. Payments can be handled via PayPal or UPI for Indian clients." },
+    { q: "What's your turnaround time?", a: "Reels: 2-3 days. Brand packages: 1-2 weeks. Websites: 2-4 weeks depending on complexity. Rush delivery is available at an additional cost." },
+    { q: "Why do you create content in Odia?", a: "Because language shouldn't be a barrier to learning tech. Most coding content is in Hindi or English — I create content in Odia so students from Odisha can learn in their mother tongue." },
 ];

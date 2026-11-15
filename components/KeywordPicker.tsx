@@ -18,8 +18,8 @@ export default function KeywordPicker() {
     };
 
     return (
-        <div className="dm frame">
-            <h3 className="h-md">Pick your keyword</h3>
+        <div className="dm">
+            <p className="eyebrow mono">PICK YOUR KEYWORD</p>
             <div className="dm__keys">
                 {DM_KEYWORDS.map(({ keyword, desc }) => (
                     <button
@@ -35,10 +35,10 @@ export default function KeywordPicker() {
                 ))}
             </div>
             <div className="dm__foot">
-                <a className="btn btn--red" href={INSTAGRAM_DM_URL} target="_blank" rel="noopener noreferrer">
-                    DM @{INSTAGRAM_HANDLE} ↗
+                <a className="btn dark" href={INSTAGRAM_DM_URL} target="_blank" rel="noopener noreferrer">
+                    DM @{INSTAGRAM_HANDLE.toUpperCase()} ↗
                 </a>
-                <p className="dm__status" role="status">
+                <p className="dm__status mono" role="status">
                     {picked
                         ? copied
                             ? `${picked} copied. Paste it in the DM.`

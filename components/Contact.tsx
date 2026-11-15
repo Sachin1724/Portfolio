@@ -1,42 +1,52 @@
-import { SOCIAL_LINKS, CONTACT_EMAIL } from "@/lib/constants";
+import { SOCIAL_LINKS, CONTACT_EMAIL, BRAND, INSTAGRAM_DM_URL, INSTAGRAM_HANDLE } from "@/lib/constants";
 import MailForm from "@/components/MailForm";
 
-const HANDLES: Record<string, string> = {
-    Instagram: "@iamsachindada",
-    YouTube: "@sachindadaorginals",
-    GitHub: "@Sachin1724",
-    LinkedIn: "sachidananda-mallick",
-};
-const ORDER = ["Instagram", "YouTube", "GitHub", "LinkedIn"];
-
 export default function Contact() {
-    const links = [...SOCIAL_LINKS].sort((a, b) => ORDER.indexOf(a.name) - ORDER.indexOf(b.name));
-
     return (
-        <section id="contact" className="band band--kajal">
+        <section id="contact" className="contact">
             <div className="wrap">
-                <h2 className="h-xl contact__title">
-                    Let&apos;s work <span className="hl hl--red">together.</span>
-                </h2>
-
-                <div className="contact__grid">
+                <div className="contact-panel">
                     <div>
-                        <ul className="reach">
-                            {links.map((link) => (
-                                <li key={link.name}>
-                                    <a href={link.url} target="_blank" rel="noopener noreferrer">
-                                        <span className="reach__name">{link.name}</span>
-                                        <span className="reach__handle">{HANDLES[link.name]} ↗</span>
+                        <p className="eyebrow mono">11 / YOUR TURN</p>
+                        <h2>
+                            LET&apos;S
+                            <br />
+                            <span>WORK</span>
+                            <br />
+                            TOGETHER.
+                        </h2>
+                        <a className="btn dark" href={INSTAGRAM_DM_URL} target="_blank" rel="noopener noreferrer">
+                            DM @{INSTAGRAM_HANDLE.toUpperCase()} ↗
+                        </a>
+                        <div className="contact-side">
+                            <span className="mono">OPEN FOR COLLABORATIONS</span>
+                            <p>
+                                Whether it&apos;s a brand identity, a cinematic reel, or a full website, let&apos;s make
+                                it happen.
+                            </p>
+                            <div className="contact-links">
+                                {SOCIAL_LINKS.map((link) => (
+                                    <a key={link.name} href={link.url} target="_blank" rel="noopener noreferrer">
+                                        {link.name.toUpperCase()} ↗
                                     </a>
-                                </li>
-                            ))}
-                        </ul>
-                        <p className="contact__mail">
-                            Email: <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
-                        </p>
+                                ))}
+                            </div>
+                            <p className="mono contact-mail">
+                                EMAIL · <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
+                            </p>
+                        </div>
                     </div>
                     <MailForm />
                 </div>
+
+                <footer className="footer">
+                    <span className="brand">
+                        {BRAND}
+                        <span>®</span>
+                    </span>
+                    <span>DESIGNED &amp; BUILT BY SACHIN. BUILDING THINGS THAT MATTER.</span>
+                    <span className="mono">© {new Date().getFullYear()} SACHIN MALLICK / IAMSACHINDADA</span>
+                </footer>
             </div>
         </section>
     );

@@ -29,9 +29,9 @@ export const SOCIAL_LINKS = [
 
 // ─── Hero Stats ───────────────────────────────────────────
 export const HERO_STATS = [
-    { value: "2.4K", label: "Followers" },
-    { value: "1.7L", label: "Views / month" },
-    { value: "77", label: "Posts" },
+    { value: "3.7K", label: "Followers" },
+    { value: "56K", label: "Reel views / 30 days" },
+    { value: "25K", label: "Viewers" },
     { value: "12+", label: "Clients" },
 ];
 
@@ -156,10 +156,18 @@ export const CONTENT_CARDS: ContentCard[] = [
     { icon: "🚀", title: "Futuristic Ideas", subtitle: "Digital stories and tech experiments" },
 ];
 
+// Instagram insights export for @iamsachindada.
+export const IG_PERIOD = "15 Oct – 14 Nov 2026";
+export const IG_FOLLOWERS = "3.7K";
 export const IG_STATS = [
-    { value: "2.4K", label: "Followers" },
-    { value: "77", label: "Posts" },
-    { value: "1.7L", label: "Views / mo" },
+    { value: "56K", label: "Reel views" },
+    { value: "25K", label: "Viewers" },
+    { value: "3.4K", label: "Likes" },
+    { value: "480", label: "Shares" },
+    { value: "438", label: "Saves" },
+    { value: "216", label: "Comments" },
+    { value: "25", label: "Reposts" },
+    { value: "7", label: "Reels posted" },
 ];
 
 // ─── Contact Process Steps ───────────────────────────────
@@ -388,6 +396,7 @@ export const EDUCATION: EducationItem[] = [
 ];
 
 // ─── Contact details ─────────────────────────────────────
+export const BRAND = "SACHU";
 export const INSTAGRAM_HANDLE = "iamsachindada";
 export const INSTAGRAM_URL = "https://www.instagram.com/iamsachindada";
 export const INSTAGRAM_DM_URL = "https://ig.me/m/iamsachindada";

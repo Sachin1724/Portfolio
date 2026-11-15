@@ -1,16 +1,22 @@
 import Image from "next/image";
+import SectionHead from "@/components/SectionHead";
 import { EQUIPMENT } from "@/lib/constants";
 
 export default function Gear() {
     return (
-        <section id="gadgets" className="band band--kajal">
+        <section id="gadgets" className="gear-band">
             <div className="wrap">
-                <div className="band__head">
-                    <h2 className="h-lg" style={{ color: "var(--haldi)" }}>
-                        The kit bag
-                    </h2>
-                    <p className="lede">What I shoot, record and edit on.</p>
-                </div>
+                <SectionHead
+                    label="04 / THE KIT BAG"
+                    title={
+                        <>
+                            SHOT ON
+                            <br />
+                            THIS STUFF.
+                        </>
+                    }
+                    note="What I shoot, record and edit on."
+                />
 
                 <div className="gear">
                     {EQUIPMENT.map((item) => (
@@ -26,12 +32,12 @@ export default function Gear() {
                                 />
                             )}
                             <div className="gear__body">
-                                <p className="kicker gear__type">{item.type}</p>
-                                <h3 className="gear__model">{item.model}</h3>
+                                <p className="mono gear__type">{item.type}</p>
+                                <h3>{item.model}</h3>
                                 <p className="gear__use">{item.usage}</p>
                                 {item.specs && item.specs.length > 0 && (
                                     <details className="gear__specs">
-                                        <summary>Specs</summary>
+                                        <summary className="mono">Specs</summary>
                                         <ul>
                                             {item.specs.map((spec) => (
                                                 <li key={spec}>{spec}</li>

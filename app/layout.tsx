@@ -1,10 +1,12 @@
-import type { Metadata } from "next";
-import { Rozha_One, Anek_Odia, Space_Mono } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import { Syne, Space_Grotesk, DM_Mono } from "next/font/google";
 import "./globals.css";
 
-const display = Rozha_One({ subsets: ["latin"], weight: "400", variable: "--font-display", display: "swap" });
-const text = Anek_Odia({ subsets: ["latin", "oriya"], axes: ["wdth"], variable: "--font-text", display: "swap" });
-const mono = Space_Mono({ subsets: ["latin"], weight: ["400", "700"], variable: "--font-mono", display: "swap" });
+const display = Syne({ subsets: ["latin"], weight: ["600", "700", "800"], variable: "--font-display", display: "swap" });
+const text = Space_Grotesk({ subsets: ["latin"], variable: "--font-text", display: "swap" });
+const mono = DM_Mono({ subsets: ["latin"], weight: ["400", "500"], variable: "--font-mono", display: "swap" });
+
+export const viewport: Viewport = { themeColor: "#f7f1e7" };
 
 export const metadata: Metadata = {
     metadataBase: new URL("https://sachidanandamallick.vercel.app"),

@@ -1,46 +1,61 @@
-import { CONTENT_CARDS, IG_STATS, INSTAGRAM_URL, INSTAGRAM_HANDLE } from "@/lib/constants";
+import SectionHead from "@/components/SectionHead";
+import { CONTENT_CARDS, IG_STATS, IG_PERIOD, IG_FOLLOWERS, INSTAGRAM_URL, INSTAGRAM_HANDLE } from "@/lib/constants";
 
 const TAGS = ["DEV", "BTS", "LAB"];
 
 export default function Teaching() {
     return (
-        <section id="content" className="band band--sindoor teach">
-            <p className="teach__ghost or" lang="or" aria-hidden="true">
-                ଓଡ଼ିଆ
-            </p>
-            <div className="wrap teach__grid">
+        <section id="content" className="wrap">
+            <SectionHead
+                label="07 / CONTENT THAT HAS ROOTS"
+                title={
+                    <>
+                        TEACHING CODE
+                        <br />
+                        IN ODIA.
+                    </>
+                }
+                note="Most coding content in India is in Hindi or English. I create dev content in Odia so that students from Odisha don't have to feel left behind."
+            />
+
+            <div className="teach">
+                <div className="teach__card">
+                    <div className="mono">INSTAGRAM · {IG_PERIOD}</div>
+                    <div className="big-num">{IG_STATS[0].value}</div>
+                    <div className="scribble">
+                        reel views in 30 days.
+                        <br />
+                        {IG_FOLLOWERS} followers and counting.
+                    </div>
+                    <a className="btn dark" href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer">
+                        FOLLOW @{INSTAGRAM_HANDLE.toUpperCase()} ↗
+                    </a>
+                    <div className="asterisk" aria-hidden="true">
+                        ✳
+                    </div>
+                </div>
+
                 <div>
-                    <h2 className="h-lg">
-                        Teaching code in <span className="hl hl--haldi hl--tilt">Odia.</span>
-                    </h2>
-                    <p className="lede" style={{ marginTop: "2rem" }}>
-                        Most coding content in India is in Hindi or English. I create dev content in Odia so that
-                        students from Odisha don&apos;t have to feel left behind.
-                    </p>
-                    <dl className="teach__stats">
-                        {IG_STATS.map((stat) => (
-                            <div key={stat.label}>
-                                <dd>
-                                    <b>{stat.value}</b>
-                                </dd>
-                                <dt className="kicker">{stat.label}</dt>
+                    <dl className="stats">
+                        {[{ value: IG_FOLLOWERS, label: "Followers" }, ...IG_STATS.slice(1)].map((stat) => (
+                            <div key={stat.label} className="stat">
+                                <dd>{stat.value}</dd>
+                                <dt className="mono">{stat.label}</dt>
                             </div>
                         ))}
                     </dl>
-                    <a className="btn btn--paper" href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer">
-                        Follow @{INSTAGRAM_HANDLE} ↗
-                    </a>
+                    <ul className="rows teach__rows">
+                        {CONTENT_CARDS.map((card, i) => (
+                            <li key={card.title}>
+                                <span className="mono">{TAGS[i] ?? "MORE"}</span>
+                                <span>
+                                    <b>{card.title}</b>
+                                    <small>{card.subtitle}</small>
+                                </span>
+                            </li>
+                        ))}
+                    </ul>
                 </div>
-
-                <ul className="teach__cards">
-                    {CONTENT_CARDS.map((card, i) => (
-                        <li key={card.title} className="teach__card frame">
-                            <span className="teach__tag">{TAGS[i] ?? "MORE"}</span>
-                            <h3>{card.title}</h3>
-                            <p>{card.subtitle}</p>
-                        </li>
-                    ))}
-                </ul>
             </div>
         </section>
     );

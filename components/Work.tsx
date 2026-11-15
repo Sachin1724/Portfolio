@@ -42,48 +42,48 @@ function Shot({ src, alt, sizes }: { src: string | null; alt: string; sizes: str
     return <img src={src} alt={alt} loading="lazy" />;
 }
 
-function ReelCard({ project }: { project: Project }) {
+function ReelCard({ project, index }: { project: Project; index: number }) {
     const link = project.live_url ?? project.link ?? project.video_url ?? "#";
     const thumb = useThumb(project, link);
 
     return (
-        <div className="reel-slot">
-        <a className="reel frame" href={link} target="_blank" rel="noopener noreferrer">
-            <span className="tape" aria-hidden="true" />
+        <a className="project reel" href={link} target="_blank" rel="noopener noreferrer">
+            <div className="project-meta">
+                <span>
+                    {String(index + 1).padStart(2, "0")} / {project.tags?.[0] ?? "VIDEO"}
+                </span>
+                <span>WATCH ▶</span>
+            </div>
             <div className="reel__shot" style={{ aspectRatio: project.aspect_ratio ?? "16/9" }}>
                 <Shot src={thumb} alt="" sizes="(max-width: 700px) 92vw, 400px" />
-                <span className="reel__play">▶ Watch</span>
             </div>
-            {project.tags && project.tags.length > 0 && (
-                <div className="reel__meta">
-                    {project.tags.slice(0, 3).map((tag) => (
-                        <span key={tag} className="chip">
-                            {tag}
-                        </span>
-                    ))}
-                </div>
-            )}
-            <h3 className="reel__title">{project.title}</h3>
-            <p className="reel__desc">{project.description}</p>
+            <h3 className="project-title">{project.title}</h3>
+            <p className="project-desc">{project.description}</p>
+            <span className="project-arrow" aria-hidden="true">
+                ↗
+            </span>
         </a>
-        </div>
     );
 }
 
-function BuildCard({ project }: { project: Project }) {
+function BuildCard({ project, index }: { project: Project; index: number }) {
     const link = project.live_url ?? project.github_url ?? project.link ?? "#";
     const thumb = useThumb(project, link);
 
     return (
-        <article className="build frame">
+        <article className="project build">
             <div className="build__shot">
-                <Shot src={thumb} alt={`${project.title} screenshot`} sizes="(max-width: 760px) 92vw, 640px" />
+                <Shot src={thumb} alt={`${project.title} screenshot`} sizes="(max-width: 800px) 92vw, 640px" />
             </div>
             <div className="build__body">
-                <h3 className="h-lg">{project.title}</h3>
-                <p className="lede">{project.description}</p>
+                <div className="project-meta">
+                    <span>{String(index + 1).padStart(2, "0")} / CODE</span>
+                    <span>{project.tech_stack?.[0] ?? "WEB"}</span>
+                </div>
+                <h3 className="build__title">{project.title}</h3>
+                <p className="project-desc">{project.description}</p>
                 {project.tech_stack && project.tech_stack.length > 0 && (
-                    <div className="build__stack">
+                    <div className="chips">
                         {project.tech_stack.map((tech) => (
                             <span key={tech} className="chip">
                                 {tech}
@@ -91,15 +91,15 @@ function BuildCard({ project }: { project: Project }) {
                         ))}
                     </div>
                 )}
-                <div className="build__links">
+                <div className="hero-actions">
                     {project.github_url && (
-                        <a className="btn btn--ink" href={project.github_url} target="_blank" rel="noopener noreferrer">
-                            GitHub ↗
+                        <a className="btn dark" href={project.github_url} target="_blank" rel="noopener noreferrer">
+                            GITHUB ↗
                         </a>
                     )}
                     {project.live_url && (
-                        <a className="btn btn--red" href={project.live_url} target="_blank" rel="noopener noreferrer">
-                            Live site ↗
+                        <a className="btn" href={project.live_url} target="_blank" rel="noopener noreferrer">
+                            LIVE SITE ↗
                         </a>
                     )}
                 </div>
@@ -132,14 +132,16 @@ export default function Work() {
     const list = tab === "media" ? media : dev;
 
     return (
-        <section id="work" className="band band--neel">
+        <section id="work" className="projects">
             <div className="wrap">
-                <div className="band__head band__head--split">
+                <div className="section-head">
                     <div>
-                        <p className="work__or or" lang="or">
-                            କାମ
-                        </p>
-                        <h2 className="h-lg">The work</h2>
+                        <p className="eyebrow mono">01 / SELECTED WORK</p>
+                        <h2>
+                            MADE WITH
+                            <br />
+                            INTENT. ✳
+                        </h2>
                     </div>
                     <div className="tabs" role="tablist" aria-label="Project type">
                         {tabs.map((t) => (
@@ -153,8 +155,7 @@ export default function Work() {
                                 className="tab"
                                 onClick={() => setTab(t.id)}
                             >
-                                {t.label}
-                                <sup>{t.count}</sup>
+                                {t.label} ({t.count})
                             </button>
                         ))}
                     </div>
@@ -162,17 +163,17 @@ export default function Work() {
 
                 <div id="work-panel" role="tabpanel" aria-labelledby={`tab-${tab}`}>
                     {list.length === 0 ? (
-                        <p className="work__empty frame">Nothing here yet. New projects are on the way.</p>
+                        <p className="work__empty">Nothing here yet. New projects are on the way.</p>
                     ) : tab === "media" ? (
                         <div className="reel-wall">
-                            {media.map((project) => (
-                                <ReelCard key={project.id} project={project} />
+                            {media.map((project, i) => (
+                                <ReelCard key={project.id} project={project} index={i} />
                             ))}
                         </div>
                     ) : (
                         <div className="builds">
-                            {dev.map((project) => (
-                                <BuildCard key={project.id} project={project} />
+                            {dev.map((project, i) => (
+                                <BuildCard key={project.id} project={project} index={i} />
                             ))}
                         </div>
                     )}

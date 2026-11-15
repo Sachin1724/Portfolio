@@ -1,21 +1,27 @@
+import SectionHead from "@/components/SectionHead";
 import { TESTIMONIALS } from "@/lib/constants";
 
 export default function Testimonials() {
     return (
-        <section id="testimonials" className="band band--neel">
+        <section id="testimonials" className="said-band">
             <div className="wrap">
-                <div className="band__head">
-                    <h2 className="h-lg">
-                        Word on the <span className="hl hl--haldi">street</span>
-                    </h2>
-                </div>
+                <SectionHead
+                    label="09 / WORD ON THE STREET"
+                    title={
+                        <>
+                            NICE THINGS
+                            <br />
+                            PEOPLE SAID.
+                        </>
+                    }
+                />
                 <div className="said">
                     {TESTIMONIALS.map((t) => (
-                        <blockquote key={t.name} className="quote frame">
+                        <blockquote key={t.name} className="quote">
                             <p>{t.text}</p>
                             <footer>
                                 <cite>{t.name}</cite>
-                                <span className="kicker">{t.role}</span>
+                                <span className="mono">{t.role}</span>
                             </footer>
                         </blockquote>
                     ))}
